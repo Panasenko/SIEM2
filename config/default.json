@@ -1,0 +1,9 @@
+{
+  "host": "localhost",
+  "port": 4001,
+  "paginate": {
+    "default": 10,
+    "max": 50
+  },
+  "mongodb": "mongodb://192.168.0.103:27017/siemv_2"
+}
