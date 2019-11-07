@@ -44,7 +44,7 @@ app.configure(channels)
 
 
 app.get('/find', async function (req, res) {
-  res.json(await app.service('zabbix-cli').get('5d4b380197753613681bf675'))
+  res.json(await app.service('zabbix-cli').find({}))
 })
 
 app.use('/graphql', graphqlHTTP({
