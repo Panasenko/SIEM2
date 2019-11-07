@@ -10,7 +10,7 @@ class Initializer {
             instance = this
         }
         this._observers = []
-        this.startWorkerHistory()  //.then(err => console.log(err))
+       // this.startWorkerHistory()  //.then(err => console.log(err))
         return instance
     }
 

@@ -25,32 +25,40 @@ const app = express(feathers())
 // Load app configuration
 app.configure(configuration())
 // Enable security, CORS, compression, favicon and body parsing
-app.use(helmet());
-app.use(cors());
-app.use(compress());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(helmet())
+app.use(cors())
+app.use(compress())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // Set up Plugins and providers
-app.configure(express.rest());
-app.configure(socketio());
+app.configure(express.rest())
+app.configure(socketio())
 
-app.configure(mongoose);
+app.configure(mongoose)
 
 // Set up our services (see `services/index.js`)
-app.configure(services);
+app.configure(services)
 // Set up event channels (see channels.js)
-app.configure(channels);
+app.configure(channels)
 
+
+app.get('/find', async function (req, res) {
+  res.json(await app.service('zabbix-cli').get('5d4b380197753613681bf675'))
+})
 
 app.use('/graphql', graphqlHTTP({
   schema: makeExecutableSchema({typeDefs, resolvers})
 }))
 
+
+
+
 // Configure a middleware for 404s and the error handler
-app.use(express.notFound());
-app.use(express.errorHandler({ logger }));
+app.use(express.notFound())
+app.use(express.errorHandler({ logger }))
 
-app.hooks(appHooks);
+app.hooks(appHooks)
 
-module.exports = app;
+
+module.exports = app

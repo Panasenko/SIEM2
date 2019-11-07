@@ -1,10 +1,10 @@
-// zabbixCli-model.js - A mongoose model
 const mongoose = require('mongoose')
+const logger = require('./../logger')
 
 module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient')
-  const { Schema } = mongooseClient
-  const zabbixCli = new Schema({
+  const {Schema} = mongooseClient
+  const ZabbixCliSchema = new Schema({
     "name": {
       type: String,
       required: true
@@ -37,13 +37,13 @@ module.exports = function (app) {
     }]
   }, {
     timestamps: true
-  });
+  })
 
-  // This is necessary to avoid model compilation errors in watch mode
-  // see https://github.com/Automattic/mongoose/issues/1251
+
   try {
-    return mongooseClient.model('zabbixCli');
+    return mongooseClient.model('zabbixCli', ZabbixCliSchema, 'zabbixCli');
   } catch (e) {
-    return mongooseClient.model('zabbixCli', zabbixCli);
+    logger.error(e)
+    throw new Error(e)
   }
-};
+}
