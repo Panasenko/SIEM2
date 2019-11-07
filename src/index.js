@@ -10,5 +10,9 @@ process.on('unhandledRejection', (reason, p) =>
 )
 
 server.on('listening', () =>
-  logger.info(`Feathers application started on http://${hostname}:${port}`)
+  logger.log({
+    level: 'info',
+    label: 'start server',
+    message: `Feathers application started on http://${hostname}:${port}`
+  })
 )

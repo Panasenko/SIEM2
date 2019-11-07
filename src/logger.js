@@ -9,7 +9,6 @@ const logger = createLogger({
   // To see more detailed errors, change this to 'debug'
   level: 'info',
   format: combine(
-    label({ label: 'right meow!' }),
     timestamp(),
     myFormat
   ),
