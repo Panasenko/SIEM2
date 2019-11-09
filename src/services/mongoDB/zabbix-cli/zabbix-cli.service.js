@@ -10,7 +10,7 @@ module.exports = function (app) {
   }
 
   // Initialize our service with any options it requires
-  app.use('/service.zabbix-api-cli', new ZabbixCli(options, app))
+  app.use('/zabbix-cli', new ZabbixCli(options, app))
 
   // Get our initialized service so that we can register hooks
   const service = app.service('zabbix-cli')

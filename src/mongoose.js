@@ -62,8 +62,3 @@ module.exports = function (app) {
 
   app.set('mongooseClient', mongoose)
 }
-
-require('./database/models/schema.ZabbixCli')
-require('./database/models/schema.Items')
-require('./database/models/schema.Triggers')
-require('./database/models/schema.Evets')
