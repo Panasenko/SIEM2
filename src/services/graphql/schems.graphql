@@ -1,0 +1,14 @@
+type Query {
+  zabbixCliFindById(_id: String!): ZabbixCli
+}
+
+type ZabbixCli {
+  name: String,
+  description: String,
+  url: String,
+  token: String,
+  _id: String,
+  inProgress: Boolean,
+  lastTime: String,
+  intervalTime: String
+}

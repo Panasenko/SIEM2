@@ -14,12 +14,6 @@ const channels = require('./channels')
 
 const mongoose = require('./mongoose')
 
-const graphqlHTTP = require('express-graphql')
-const {importSchema} = require('graphql-import')
-const {makeExecutableSchema} = require('graphql-tools')
-const resolvers = require('./graphql/resolvers/main.resolvers')
-const typeDefs = importSchema('src/graphql/schems/schema.graphql')
-
 const app = express(feathers())
 
 // Load app configuration
@@ -42,17 +36,10 @@ app.configure(services)
 // Set up event channels (see channels.js)
 app.configure(channels)
 
-
+/*
 app.get('/find', async function (req, res) {
   res.json(await app.service('zabbix-cli').find({}))
-})
-
-app.use('/graphql', graphqlHTTP({
-  schema: makeExecutableSchema({typeDefs, resolvers})
-}))
-
-
-
+})*/
 
 // Configure a middleware for 404s and the error handler
 app.use(express.notFound())
