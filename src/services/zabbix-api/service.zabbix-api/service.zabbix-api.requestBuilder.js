@@ -1,6 +1,6 @@
-const Errors = require("./Errors")
+const Errors = require("./service.zabbix-api.valid-errors")
 
-class RequestBuilder extends Errors {
+class ServiceZabbixApiRequestBuilder extends Errors {
 
 
     static build(method, token, params) {
@@ -29,4 +29,4 @@ class RequestBuilder extends Errors {
 
 }
 
-module.exports = RequestBuilder
+module.exports = ServiceZabbixApiRequestBuilder

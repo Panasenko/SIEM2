@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const zabbixAPI = require('../../../modules/zabbix/zabbixAPI')
+const zabbixAPI = require('../../../modules/service.zabbix-api/zabbixAPI')
 
 class ZabbixAPIQuery {
     async token(parent, args) {

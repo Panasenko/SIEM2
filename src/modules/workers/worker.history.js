@@ -1,6 +1,6 @@
 const Worker = require('./worker')
 const ChangItems = require('./changItems')
-const ZabbixAPI = require('../zabbix/zabbixAPI')
+const ZabbixAPI = require('../../services/zabbix-api/service.zabbix-api/service.zabbix-api.zabbixAPI')
 const ZabbixCliDB = require('../../database/controllers/controll.ZabbixCli')
 const TriggerRouter = require('../triggers/trigger.router')
 

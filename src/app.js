@@ -36,11 +36,6 @@ app.configure(services)
 // Set up event channels (see channels.js)
 app.configure(channels)
 
-/*
-app.get('/find', async function (req, res) {
-  res.json(await app.service('zabbix-cli').find({}))
-})*/
-
 // Configure a middleware for 404s and the error handler
 app.use(express.notFound())
 app.use(express.errorHandler({ logger }))

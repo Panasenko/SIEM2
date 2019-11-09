@@ -1,8 +1,8 @@
 const axios = require('axios')
-const RB = require('./RequestBuilder')
-const Errors = require("./Errors")
+const RB = require('./service.zabbix-api.requestBuilder')
+const Errors = require("./service.zabbix-api.valid-errors")
 
-class CallAPI extends Errors {
+class ServiceZabbixApiCallAPI extends Errors {
     constructor(url) {
         super()
         this._url = url
@@ -32,4 +32,4 @@ class CallAPI extends Errors {
     }
 }
 
-module.exports = CallAPI
+module.exports = ServiceZabbixApiCallAPI
