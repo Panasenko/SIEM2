@@ -1,5 +1,5 @@
 // Initializes the `triggers` service on path `/triggers`
-const { Triggers } = require('./triggers.class');
+const { TriggersDB } = require('./triggers.class');
 const createModel = require('../../../models/triggers.model');
 const hooks = require('./triggers.hooks');
 
@@ -10,10 +10,10 @@ module.exports = function (app) {
   };
 
   // Initialize our service with any options it requires
-  app.use('/triggers', new Triggers(options, app));
+  app.use('/triggersDB', new TriggersDB(options, app));
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('triggers');
+  const service = app.service('triggersDB');
 
   service.hooks(hooks);
 };

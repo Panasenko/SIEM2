@@ -1,4 +1,4 @@
-
+const logger = require('../../../logger')
 
 module.exports = {
   before: {
@@ -22,7 +22,15 @@ module.exports = {
   },
 
   error: {
-    all: [],
+    all: [
+      function (context) {
+        logger.error({
+          level: 'error',
+          label: 'ZabbixCli',
+          message: `Error - ${context.error} - ${e}`
+        })
+      }
+    ],
     find: [],
     get: [],
     create: [],

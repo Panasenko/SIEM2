@@ -1,12 +1,31 @@
+const logger = require('./../../../../logger')
+
 module.exports = function ZabbixCLIQuery() {
   const app = this
-  const ZabbixCli = app.service('zabbix-cli')
+  const ZabbixCliDB = app.service('zabbix-cli-DB')
+
   return {
     async zabbixCliFindById(parent, args) {
       try {
-        return await ZabbixCli.get(args._id)
+        return await ZabbixCliDB.get(args._id)
       } catch (e) {
-        console.log(e)
+        logger.log({
+          level: 'error',
+          label: 'query.zabbix-cli',
+          message: ` zabbixCliFindById(parent, args) - ${e}`
+        })
+      }
+    },
+
+    async zabbixCliFind(parent, args) {
+      try {
+        return await ZabbixCliDB.find(null)
+      } catch (e) {
+        logger.log({
+          level: 'error',
+          label: 'query.zabbix-cli',
+          message: `zabbixCliFind(parent, args) - ${e}`
+        })
       }
     }
   }

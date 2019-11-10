@@ -1,6 +1,6 @@
 const {Service} = require('feathers-mongoose')
 
-exports.ZabbixCli = class ZabbixCli extends Service {
+exports.ZabbixCliDB = class ZabbixCliDB extends Service {
 
   constructor(args) {
     super(args)
