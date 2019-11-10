@@ -1,13 +1,8 @@
-
 const graphqlHTTP = require('express-graphql')
 const {makeExecutableSchema} = require('graphql-tools')
 const {importSchema} = require('graphql-import')
-/*
 
-const resolvers = require('./resolvers/main.resolvers')
-const typeDefs = importSchema('./schems/schema.graphql')
-*/
-const typeDefs = importSchema('./src/services/graphql/schems.graphql')
+const typeDefs = importSchema('./src/services/graphql/schems/schema.graphql')
 const resolvers = require('./resolvers')
 
 module.exports = function (app) {

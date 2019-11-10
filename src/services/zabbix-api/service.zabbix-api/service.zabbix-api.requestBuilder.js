@@ -2,7 +2,6 @@ const Errors = require("./service.zabbix-api.valid-errors")
 
 class ServiceZabbixApiRequestBuilder extends Errors {
 
-
     static build(method, token, params) {
         Errors.valid(method, this.constructor.name, "build")
 

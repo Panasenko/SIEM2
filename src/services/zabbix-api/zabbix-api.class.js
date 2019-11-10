@@ -1,112 +1,115 @@
-const Errors = require("./service.zabbix-api/service.zabbix-api.valid-errors")
+const logger = require('./../../logger')
 const CallAPI = require("./service.zabbix-api/service.zabbix-api.callAPI")
 
-exports.ZabbixApi = class ZabbixApi {
+ class ZabbixApi {
 
-  async find (id, params) {
-    return {
-      id, text: `A new message with ID: ${id}!`
-    };
-  }
+  async find({method, args}) {
+    let {url, token, reqParam} = args
+    let params = {}
 
-  async callAPI(url, token, method, params) {
-    let new_Obj = new CallAPI(url)
-    let result = await new_Obj.call(method, token, params)
-    return await result.data.result
-  }
+    switch (method) {
+      case "apiinfo.version":
+        params = {}
+        break
+      case "user.login":
+        params = reqParam
+        break
+      case "host.get":
+        params = {
+          output: "extend",
+          selectInterfaces: ["interfaceid", "ip"]
+        }
+        break
+      case "hostgroup.get":
+        params = {
+          "output": "extend",
+          "real_hosts": true,
+          "selectHosts": ["hostid", "host", "name", "description", "status"]
+        }
+        break
+      case "item.get":
+        params = {
+          output: "extend",
+          hostids: reqParam.hostid,
+          sortfield: "name",
+          selectGraphs: "extend",
+          selectApplications: "extend"
+        }
+        break
+      case "history.get":
+        params = {
+          output: "extend",
+          itemids: reqParam.itemids,
+          history: reqParam.history || 0,
+          sortfield: "clock",
+          sortorder: "DESC"
+        }
 
-  async login(url, reqParam) {
-    Errors.valid(reqParam, this.constructor.name, "login")
-    return await this.callAPI(url, null, "user.login", reqParam)
-  }
+        if(reqParam.time_from){
+          params.time_from = reqParam.time_from
+        }
 
-  async getVersion(url) {
-    return await this.callAPI(url, null, "apiinfo.version", {})
-  }
-
-  async getHosts(url, token, reqParam) {
-    let params = {
-      output: "extend",
-      selectInterfaces: ["interfaceid", "ip"]
+        if(reqParam.time_till){
+          params.time_till = reqParam.time_till
+        }
+        break
+      case "graph.get":
+        params = {
+          "output": "extend",
+          "hostids": reqParam.hostid,
+          "sortfield": "name",
+          "selectItems": "extend",
+          "selectHosts": "hostid"
+        }
+        break
+      case "graphitem.get":
+        params = {
+          output: "extend",
+          expandData: 1,
+          graphids: reqParam.graphids
+        }
+        break
+      case "application.get":
+        params = {
+          output: "extend",
+          hostids: reqParam.hostid,
+          selectItems: "extend"
+        }
+        break
+      default:
+        logger.log({
+          level: 'error',
+          label: 'zabbix-api.class',
+          message: `method not found`
+        })
+        throw new Error({
+          level: 'info',
+          label: 'zabbix-api.class',
+          message: `method not found`
+        })
     }
-    Errors.valid(params, this.constructor.name, "getHosts")
-    return await this.callAPI(url, token, "host.get", params)
+    return await this.callAPI(url, token, method, params)
+
   }
 
-  async getHostGroup(url, token, reqParam) {
-    let params = {
-      "output": "extend",
-      "real_hosts": true,
-      "selectHosts": ["hostid", "host", "name", "description", "status"]
+  async callAPI(url, token, method, reqParams) {
+    try {
+      let new_Obj = new CallAPI(url)
+      let result = await new_Obj.call(method, token, reqParams)
+      return await result.data.result
+    } catch (e) {
+      logger.log({
+        level: 'error',
+        label: 'zabbix-api.class',
+        message: e
+      })
+      throw new Error({
+        level: 'error',
+        label: 'zabbix-api.class',
+        message: e
+      })
     }
-    Errors.valid(params, this.constructor.name, "getHostGroup")
-    return await this.callAPI(url, token, "hostgroup.get", params)
-  }
-
-  async getItems(url, token, reqParam) {
-    let params = {
-      output: "extend",
-      hostids: reqParam.hostid,
-      sortfield: "name",
-      selectGraphs: "extend",
-      selectApplications: "extend"
-    }
-    Errors.valid(params, this.constructor.name, "getItems")
-    return await this.callAPI(url, token, "item.get", params)
-  }
-
-  async getHistory(url, token, reqParam) {
-    let params = {
-      output: "extend",
-      itemids: reqParam.itemids,
-      history: reqParam.history || 0,
-      sortfield: "clock",
-      sortorder: "DESC"
-    }
-
-    if (reqParam.time_from) {
-      params.time_from = reqParam.time_from
-    }
-
-    if (reqParam.time_till) {
-      params.time_till = reqParam.time_till
-    }
-
-
-    Errors.valid(params, this.constructor.name, "getHistory")
-    return await this.callAPI(url, token, "history.get", params)
-  }
-
-  async getGraphics(url, token, reqParam) {
-    let params = {
-      "output": "extend",
-      "hostids": reqParam.hostid,
-      "sortfield": "name",
-      "selectItems": "extend",
-      "selectHosts": "hostid"
-    }
-
-    Errors.valid(params, this.constructor.name, "getGraphics")
-    return await this.callAPI(url, token, "graph.get", params)
-  }
-
-  async getGraphItems(url, token, reqParam) {
-    let params = {
-      output: "extend",
-      expandData: 1,
-      graphids: reqParam.graphids
-    }
-    Errors.valid(params, this.constructor.name, "getGraphItems")
-    return await this.callAPI(url, token, "graphitem.get", params)
-  }
-
-  async getApplications(url, token, reqParam) {
-    let params = {
-      output: "extend",
-      hostids: reqParam.hostid,
-      selectItems: "extend"
-    }
-    Errors.valid(params, this.constructor.name, "getApplications")
-    return await this.callAPI(url, token, "application.get", params)
   }
 }
+
+module.exports = ZabbixApi

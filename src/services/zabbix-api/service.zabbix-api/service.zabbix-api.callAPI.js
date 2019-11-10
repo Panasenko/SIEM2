@@ -15,7 +15,6 @@ class ServiceZabbixApiCallAPI extends Errors {
   }
 
   async call(method, token, params) {
-
     try {
       return await axios({
         baseURL: this.url,

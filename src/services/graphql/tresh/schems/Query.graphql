@@ -1,13 +1,13 @@
 type Query {
     zabbixCliFindById(_id: String!): ZabbixCli
     zabbixCliFind(_id: String): [ZabbixCli]
-    version(input: inputArgs): Version
-    token(input: inputArgs): Token
-    hosts(input: inputArgs): [Hosts]
-    hostgroup(input: inputArgs): [Hostgroup]
-    applications(input: inputArgs): [Applications]
-    graphics(input: inputArgs): [Graphics]
-    items(input: inputArgs): [Items]
+    version(url: String!): Version
+    token(url: String!, input: inputToken): Token
+    hosts(url: String, token: String): [Hosts]
+    hostgroup(url: String, token: String): [Hostgroup]
+    applications(url: String, token: String): [Applications]
+    graphics(url: String, token: String): [Graphics]
+    items(url: String, token: String): [Items]
 }
 
 type ZabbixCli {
@@ -26,21 +26,13 @@ type Version {
     version: String
 }
 
-input inputArgs{
-  method: String,
-  url: String,
-  token: String,
-  reqParam: ReqParam
-}
-
-input ReqParam {
-  user: String,
-  password: String,
-  hostid: String
-}
-
 type Token {
     token: String
+}
+
+input inputToken {
+    user: String,
+    password: String
 }
 
 type Hosts {
@@ -49,9 +41,9 @@ type Hosts {
     name: String,
     description: String,
     status: String,
-    graphics(input: inputArgs): [Graphics],
-    applications(input: inputArgs): [Applications],
-    items(input: inputArgs): [Items]
+    applications(url: String, token: String): [Applications]
+    graphics(url: String, token: String): [Graphics]
+    items(url: String, token: String): [Items]
 }
 
 type Hostgroup {
