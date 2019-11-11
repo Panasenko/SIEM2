@@ -18,7 +18,6 @@ module.exports = function (app) {
     },
     "itemid": {
       type: String,
-      unique: true,
       required: true
     },
     "description": {

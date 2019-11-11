@@ -20,16 +20,30 @@ module.exports = {
     patch: [],
     remove: [
       async context => {
+        const ItemsDB = context.app.service('itemsDB')
+        const TriggersDB = context.app.service('triggersDB')
         let resultId = context.result._id
-        if (await context.app.service('itemsDB').find({query: {zabbixCliIDSchema: resultId}}).length) {
-          console.log("itemsDB find")
-          await context.app.service('itemsDB').remove(null, {zabbixCliIDSchema: resultId})
+        console.log(resultId)
+        try {
+          let ItemsDBResult = await ItemsDB.find({query: {zabbixCliIDSchema: resultId}})
+          if (ItemsDBResult.length) {
+            console.log("itemsDB find")
+            await ItemsDB.remove(null, {query: {zabbixCliIDSchema: resultId}})
+          }
+        } catch (e) {
+          throw new Error(`zabbixCli.hooks remove ItemsDB ${e}`)
         }
 
-        if (await context.app.service('triggersDB').find({query: {zabbixCliIDSchema: resultId}}).length) {
-          console.log("TriggersDB find")
-          await context.app.service('triggersDB').remove(null, {zabbixCliIDSchema: resultId})
+        try {
+         let TriggersDBResult = await TriggersDB.find({query: {zabbixCliIDSchema: resultId}})
+          if (TriggersDBResult.length) {
+            console.log("TriggersDB find")
+            await TriggersDB.remove(null, {query: {zabbixCliIDSchema: resultId}})
+          }
+        } catch (e) {
+          throw new Error(`zabbixCli.hooks remove TriggersDB ${e}`)
         }
+
       },
     ]
   },
@@ -37,8 +51,6 @@ module.exports = {
   error: {
     all: [
       context => {
-      console.log(context)
-
         logger.log({
           level: 'error',
           label: 'ZabbixCli - hooks',

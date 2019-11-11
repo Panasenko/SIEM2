@@ -5,7 +5,8 @@ const hooks = require('./items.hooks');
 
 module.exports = function (app) {
   const options = {
-    Model: createModel(app)
+    Model: createModel(app),
+    multi: true
   };
 
   // Initialize our service with any options it requires

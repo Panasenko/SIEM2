@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
 class ChangItems {
-
+//TODO: сделать фильтрацию на дубли элементов данных
     static parsItems(items) {
         if (_.every(items, value => _.isObject(value))) {
             return _.reduce(items, function (accumulator, value) {
