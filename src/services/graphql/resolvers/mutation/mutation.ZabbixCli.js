@@ -15,7 +15,7 @@ module.exports = function ZabbixCliMutation() {
          logger.log({
            level: 'error',
            label: 'mutation.ZabbixCli',
-           message: ` createZabbixCli: async(parent, args) - ${e}`
+           message: `method createZabbixCli - ${e}`
          })
          throw new Error(e)
        }
@@ -35,12 +35,7 @@ module.exports = function ZabbixCliMutation() {
 
      deleteZabbixCli: async(parent, args) => { //TODO: завершить тестирование, исправить ошибки при удалении связанных элементов
        try {
-         let elementDelete = await ZabbixCliDB.remove(args._id)
-
-         console.log(elementDelete)
-  /*       await itemsDB.remove(null, {zabbixCliIDSchema: args._id})
-         await TriggersDB.remove(null,{zabbixCliIDSchema: args._id})*/
-         return await elementDelete
+        return  await ZabbixCliDB.remove(args._id)
        } catch (e) {
          logger.log({
            level: 'error',
