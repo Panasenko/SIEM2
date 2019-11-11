@@ -31,7 +31,7 @@ module.exports = function (app) {
     "intervalTime": {
       type: Number
     },
-    "items": [{
+    "items": [{ //TODO: Удалить и переделать логику
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Items'
     }]
