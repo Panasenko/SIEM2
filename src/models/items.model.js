@@ -28,11 +28,7 @@ module.exports = function (app) {
     },
     "units": {
       type: String
-    },
-    "triggers": [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Triggers'
-    }]
+    }
 
   }, {
     timestamps: true

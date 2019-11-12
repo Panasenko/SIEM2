@@ -30,11 +30,7 @@ module.exports = function (app) {
     },
     "intervalTime": {
       type: Number
-    },
-    "items": [{ //TODO: Удалить и переделать логику
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Items'
-    }]
+    }
   }, {
     timestamps: true
   })

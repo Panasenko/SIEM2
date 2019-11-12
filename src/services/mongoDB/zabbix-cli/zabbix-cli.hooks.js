@@ -22,29 +22,28 @@ module.exports = {
       async context => {
         const ItemsDB = context.app.service('itemsDB')
         const TriggersDB = context.app.service('triggersDB')
+
         let resultId = context.result._id
-        console.log(resultId)
+
         try {
           let ItemsDBResult = await ItemsDB.find({query: {zabbixCliIDSchema: resultId}})
           if (ItemsDBResult.length) {
-            console.log("itemsDB find")
             await ItemsDB.remove(null, {query: {zabbixCliIDSchema: resultId}})
           }
         } catch (e) {
-          throw new Error(`zabbixCli.hooks remove ItemsDB ${e}`)
+          throw new Error(e)
         }
 
         try {
-         let TriggersDBResult = await TriggersDB.find({query: {zabbixCliIDSchema: resultId}})
-          if (TriggersDBResult.length) {
-            console.log("TriggersDB find")
+          let resultTriggersDB = await TriggersDB.find({query: {zabbixCliIDSchema: resultId}})
+          if (resultTriggersDB.length) {
             await TriggersDB.remove(null, {query: {zabbixCliIDSchema: resultId}})
           }
         } catch (e) {
-          throw new Error(`zabbixCli.hooks remove TriggersDB ${e}`)
+          throw new Error(e)
         }
 
-      },
+      }
     ]
   },
 

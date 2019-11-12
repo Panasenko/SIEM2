@@ -1,6 +1,6 @@
 type Query {
-    zabbixCliFindById(_id: String!): ZabbixCli
-    zabbixCliFind(_id: String): [ZabbixCli]
+    zabbixCliFindById(_id: ID!): ZabbixCli
+    zabbixCliFind(_id: ID): [ZabbixCli]
 
     version(input: inputArgs): Version
     token(input: inputArgs): Token
@@ -16,11 +16,10 @@ type ZabbixCli {
     description: String,
     url: String,
     token: String,
-    _id: String,
+    _id: ID,
     inProgress: Boolean,
     lastTime: String,
-    intervalTime: String,
-    items: [Items]
+    intervalTime: String
 }
 
 type Version {
@@ -76,7 +75,7 @@ type Applications {
 }
 
 type Trigger{
-    _id: String,
+    _id: ID,
     name: String,
     description: String,
     itemid: String,
@@ -90,7 +89,7 @@ type Trigger{
 }
 
 type Items {
-    _id: String,
+    _id: ID,
     itemid: String,
     hostid: String,
     name: String,
@@ -103,7 +102,6 @@ type Items {
     applications: [Applications],
     graphs: [Graphics],
     value_type: String,
-    units: String,
-    triggers: [Trigger]
+    units: String
 }
 

@@ -25,7 +25,7 @@ module.exports = function ZabbixCliMutation() {
         logger.log({
           level: 'error',
           label: 'mutation.ZabbixCli',
-          message: ` updateZabbixCli: async(parent, args) - ${e}`
+          message: `updateZabbixCli - ${e}`
         })
         throw new Error(e)
       }
@@ -38,7 +38,7 @@ module.exports = function ZabbixCliMutation() {
         logger.log({
           level: 'error',
           label: 'mutation.ZabbixCli',
-          message: ` createZabbixCli: async(parent, args) - ${e}`
+          message: ` createZabbixCli - ${e}`
         })
         throw new Error(e)
       }

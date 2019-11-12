@@ -3,9 +3,7 @@ const _ = require('lodash')
 
 module.exports = function ItemsMutation() {
   const app = this
-  const ZabbixCliDB = app.service('zabbix-cli-DB')
   const ItemsDB = app.service('itemsDB')
-  const TriggersDB = app.service('itemsDB')
 
   return {
     createItems: async (parent, args) => {

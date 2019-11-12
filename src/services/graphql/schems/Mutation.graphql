@@ -1,18 +1,19 @@
 type Mutation {
   createZabbixCli(input: ZabbixCliInput): ZabbixCli
-  updateZabbixCli(_id: String!, input: ZabbixCliInput): ZabbixCli
-  deleteZabbixCli(_id: String!): ZabbixCli
+  updateZabbixCli(_id: ID!, input: ZabbixCliInput): ZabbixCli
+  deleteZabbixCli(_id: ID!): ZabbixCli
 
   createItems(input: ItemsZabbixCliInput): ItemsZabbixCli
-  updateItems(_id: String!, input: ItemsZabbixCliInput): ItemsZabbixCli
-  deleteItems(_id: String!): ItemsZabbixCli
+  updateItems(_id: ID!, input: ItemsZabbixCliInput): ItemsZabbixCli
+  deleteItems(_id: ID!): ItemsZabbixCli
 
-  createTriggersToItems(_id: String!, input: TriggerItemsInput): TriggerItems
-  deleteTriggersToItems(_id: String!): TriggerItems
+  createTriggers(input: TriggerMutationInput): TriggerMutation
+  updateTriggers(_id: ID!, input: TriggerMutationInput): TriggerMutation
+  deleteTriggers(_id: ID!): TriggerMutation
 }
 
-type TriggerItems{
-  _id: String,
+type TriggerMutation{
+  _id: ID,
   name: String,
   description: String,
   itemid: String,
@@ -26,7 +27,7 @@ type TriggerItems{
   zabbixCliIDSchema: ID
 }
 
-input TriggerItemsInput{
+input TriggerMutationInput{
   name: String,
   description: String,
   itemid: String,
@@ -35,11 +36,12 @@ input TriggerItemsInput{
   high: String,
   average: String,
   warning: String,
-  information: String
+  information: String,
+  ItemIDSchema: ID,
+  zabbixCliIDSchema: ID
 }
 
 input ZabbixCliInput{
-  _id: String,
   name: String,
   description: String,
   url: String,
@@ -47,30 +49,27 @@ input ZabbixCliInput{
   inProgress: Boolean,
   lastTime: Int,
   isError: Boolean,
-  intervalTime: Int,
-  items: [ItemsZabbixCliInput]
+  intervalTime: Int
 }
 
 input ItemsZabbixCliInput {
   zabbixCliIDSchema: ID,
-  _id: String,
+  _id: ID,
   itemid: String,
   hostid: String,
   name: String,
   description: String,
   value_type: String,
-  units: String,
-  triggers: [TriggerItemsInput]
+  units: String
 }
 
 type ItemsZabbixCli {
-  _id: String,
+  _id: ID,
   itemid: String,
   hostid: String,
   name: String,
   zabbixCliIDSchema: ID,
   description: String,
   value_type: String,
-  units: String,
-  triggers: [TriggerItems]
+  units: String
 }

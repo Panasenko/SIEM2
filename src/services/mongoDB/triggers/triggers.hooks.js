@@ -1,4 +1,4 @@
-
+const logger = require('../../../logger')
 
 module.exports = {
   before: {
@@ -22,7 +22,13 @@ module.exports = {
   },
 
   error: {
-    all: [],
+    all: [ context => {
+      logger.log({
+        level: 'error',
+        label: 'Items - hooks error',
+        message: context.error
+      })
+    }],
     find: [],
     get: [],
     create: [],

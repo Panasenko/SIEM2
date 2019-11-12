@@ -46,10 +46,6 @@ module.exports = function (app) {
     "zabbixCliIDSchema": {
       type: mongoose.Schema.Types.ObjectId
     },
-    "eventIDSchema": {
-      type: mongoose.Schema.Types.ObjectId,
-      default: null
-    },
   }, {
     timestamps: true
   });
