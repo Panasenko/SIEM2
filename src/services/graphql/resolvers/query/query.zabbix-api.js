@@ -11,7 +11,7 @@ module.exports = function ZabbixAPIQuery() {
       logger.log({
         level: 'error',
         label: 'resolver.zabbix-api',
-        message: `method callService(method, args) ${e}`
+        message: `method callService ${e}`
       })
     }
   }

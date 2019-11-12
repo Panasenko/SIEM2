@@ -1,36 +1,46 @@
-/* eslint-disable no-unused-vars */
+const _ = require('lodash')
+const InitWorker = require('./init.worker')
+
 exports.Worker = class Worker {
-  constructor (options) {
-    this.options = options || {};
+  constructor(app) {
+    this.workers = []
+    this.ZabbixCliDB = app.service('zabbix-cli-DB')
+    this.init(app)
   }
 
-  async find (params) {
-    return [];
-  }
 
-  async get (id, params) {
-    return {
-      id, text: `A new message with ID: ${id}!`
-    };
-  }
+  init(app) {
+    const ZabbixCli = this.ZabbixCliDB.find()
 
-  async create (data, params) {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current, params)));
+    if (ZabbixCli.length) {
+      _.forEach(ZabbixCli, async item => {
+        return this.workers.push(new InitWorker(item, app))
+      })
     }
 
+  }
+
+  async find(params) {
+    return this.workers
+  }
+
+  async get(id, params) {
+    return _.filter(this.workers, items => items._id === id)
+  }
+
+  async create(data, params) {
+
+  }
+
+  async update(id, data, params) {
     return data;
   }
 
-  async update (id, data, params) {
+  async patch(id, data, params) {
     return data;
   }
 
-  async patch (id, data, params) {
-    return data;
-  }
-
-  async remove (id, params) {
-    return { id };
+  async remove(id, params) {
+    return {id};
   }
 };
