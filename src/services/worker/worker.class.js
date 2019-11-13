@@ -1,7 +1,7 @@
 const _ = require('lodash')
-const InitWorker = require('./init.worker')
+const Worker = require('./worker.run')
 
-exports.Worker = class Worker {
+exports.WorkerService = class WorkerService {
   constructor(app) {
     this.workers = []
     this.ZabbixCliDB = app.service('zabbix-cli-DB')
@@ -14,7 +14,7 @@ exports.Worker = class Worker {
 
     if (ZabbixCli.length) {
       _.forEach(ZabbixCli, async item => {
-        return this.workers.push(new InitWorker(item, app))
+        return this.workers.push(new Worker(item, app))
       })
     }
 
@@ -29,11 +29,15 @@ exports.Worker = class Worker {
   }
 
   async create(data, params) {
-
+    return this.workers.push(new Worker(data, app))
   }
 
   async update(id, data, params) {
-    return data;
+    return _.forEach(this.workers, (subscriber) => {
+      if (String(subscriber._id) === id) {
+        subscriber.updateProperties().then(r => console.error(r))
+      }
+    })
   }
 
   async patch(id, data, params) {
@@ -41,6 +45,6 @@ exports.Worker = class Worker {
   }
 
   async remove(id, params) {
-    return {id};
+    return  _.filter(this.workers, subscriber => String(subscriber._id) !== id)
   }
 };

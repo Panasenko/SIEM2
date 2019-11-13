@@ -1,6 +1,6 @@
 const _ = require('lodash')
 
-class ChangItems {
+class ChangItemsWorker {
 //TODO: сделать фильтрацию на дубли элементов данных
     static parsItems(items) {
         if (_.every(items, value => _.isObject(value))) {
@@ -36,5 +36,5 @@ class ChangItems {
     }
 }
 
-module.exports = ChangItems
+module.exports = ChangItemsWorker
 

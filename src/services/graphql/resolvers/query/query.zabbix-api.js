@@ -1,4 +1,5 @@
 const logger = require('../../../../logger')
+
 module.exports = function ZabbixAPIQuery() {
 
   const app = this
