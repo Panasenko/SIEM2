@@ -13,34 +13,57 @@ const appHooks = require('./app.hooks')
 const channels = require('./channels')
 
 const mongoose = require('./mongoose')
+const redis = require('./redis')
 
 const app = express(feathers())
 
-// Load app configuration
+
 app.configure(configuration())
-// Enable security, CORS, compression, favicon and body parsing
+
 app.use(helmet())
 app.use(cors())
 app.use(compress())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Set up Plugins and providers
 app.configure(express.rest())
 app.configure(socketio())
 
 app.configure(mongoose)
+app.configure(redis)
 
-// Set up our services (see `services/index.js`)
 app.configure(services)
-// Set up event channels (see channels.js)
+
 app.configure(channels)
 
-// Configure a middleware for 404s and the error handler
+
+
+//const redis = require('redis')
+
+//const client = redis.createClient(app.get('redis'));
+
+
+
+
+const redisCli = app.service("redis")
+
+app.get("/test",  async (req, res) => {
+
+  const params = {
+    key: "string1"
+  }
+
+ // const result = redisCli.find(params).then(it => res.send(it))
+ const ress =  await redisCli.find(params)
+
+  res.send(await ress)
+
+  // redisCli.set("string1", "strin244444444444444444444444444444g", redis.print)
+})
+
 app.use(express.notFound())
 app.use(express.errorHandler({ logger }))
 
 app.hooks(appHooks)
-
 
 module.exports = app

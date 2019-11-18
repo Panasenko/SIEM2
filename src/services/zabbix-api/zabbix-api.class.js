@@ -104,8 +104,8 @@ const CallAPI = require("./service.zabbix-api/service.zabbix-api.callAPI")
         message: e
       })
       throw new Error({
-        level: 'error',
-        label: 'zabbix-api.class',
+        level: "error",
+        label: "zabbix-api.class",
         message: e
       })
     }

@@ -7,6 +7,8 @@ const triggers = require('./mongoDB/triggers/triggers.service.js');
 const items = require('./mongoDB/items/items.service.js');
 const events = require('./mongoDB/events/events.service.js');
 
+const redis = require('./redis/redis.service.js');
+
 module.exports = function (app) {
   app.configure(zabbixCli)
   app.configure(zabbixApi)
@@ -16,4 +18,5 @@ module.exports = function (app) {
   app.configure(items)
   app.configure(events)
   app.configure(graphql)
+  app.configure(redis);
 }
