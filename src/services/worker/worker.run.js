@@ -1,27 +1,81 @@
-const ChangItems = require('./changItems.worker')
+const _ = require('lodash')
 
 module.exports = class Worker {
-  constructor(params, app){
-    this.id = params._id
-    this.name = params.name
-    this.description = params.description
-    this.url = params.url
-    this.token = params.token
-    this.intervalTime = params.intervalTime || 10000
-    this.lastTime = params.lastTime || Date.now() / 1000 | 0
-    this.timerID = null
+  constructor(params, options) {
+    this.zabbixCli = params
     this.items = []
 
+    this.driver = options
+
+    this.lastTime = Date.now() / 1000 | 0
+    this.timerID = null
     this.running = true
     this.updated = false
     this.isError = false
-
-    this.Service_itemsDB = app.service('itemsDB')
-    this.Service_triggersDB = app.service('triggersDB')
-    this.Service_ZabbixAPI = app.service('zabbix-api')
+   // this.worker()
   }
 
-  init(){
+  worker() {
+    if (this.timerID === null) {
+      this.timerID = setInterval((promisArr) => {
+        Promise.all([this.initItem()]).then(() => {
+          console.log("worker")
+        })
+      }, this.zabbixCli.intervalTime || 1000)
+    }
+  }
+
+  initItem() {
+    const zabbixCli_ID = this.zabbixCli._id
+    return new Promise((resolve) => {
+      let result = this.driver.itemsDB.find({query: {zabbixCli_ID: zabbixCli_ID}})
+      resolve(result)
+    })
+
+      .then(items => {
+        this.items = _.reduce(items, function (accumulator, value) {
+          accumulator[+value.value_type].push(value.itemid)
+          return accumulator
+        }, [[], [], [], [], []])
+        console.log(this.items)
+        return this.items
+      })
+  }
+
+  /*  initItem() {
+      console.log(2)
+      const zabbixCli_ID = this.zabbixCli._id
+       new Promise((resolve, reject) => {
+       let result = this.driver.items.find()
+        resolve(result)
+      })
+
+        .then(item => { console.log(item) })*/
+
+  /*    .then(items => {
+        console.log(items)
+
+        return this.items = _.reduce(items, function (accumulator, value) {
+          accumulator[+value.value_type].push(value.itemid)
+          return accumulator
+        }, [[], [], [], [], []])
+      })*/
+
+
+  /*  iterator() {
+      for (let [key, value] of this.items.entries()) {
+        if (value.length > 0) {
+          let reqParams = {}
+          reqParams.itemids = value
+          reqParams.time_from = this.lastTime || Date.now() / 1000 | 0
+          reqParams.history = key
+          console.log(reqParams)
+        }
+      }
+    }*/
+
+
+  /*init(){
     let promise = new Promise((resolve, reject) => {
       this.Service_itemsDB.find({query: {zabbixCliIDSchema: this.id}})
     })
@@ -98,7 +152,7 @@ module.exports = class Worker {
       }
     }
   }
-
+*/
 
 
 }

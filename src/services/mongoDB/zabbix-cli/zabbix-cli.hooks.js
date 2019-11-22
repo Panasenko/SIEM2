@@ -19,7 +19,7 @@ module.exports = {
     update: [],
     patch: [],
     remove: [
-      async context => {
+    /*  async context => {
         const ItemsDB = context.app.service('itemsDB')
         const TriggersDB = context.app.service('triggersDB')
 
@@ -43,7 +43,7 @@ module.exports = {
           throw new Error(e)
         }
 
-      }
+      }*/
     ]
   },
 

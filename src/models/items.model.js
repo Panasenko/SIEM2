@@ -5,7 +5,7 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient');
   const { Schema } = mongooseClient;
   const items = new Schema({
-    "zabbixCliIDSchema": {
+    "zabbixCli_ID": {
       type: mongoose.Schema.Types.ObjectId
     },
     "name": {

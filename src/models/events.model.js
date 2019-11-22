@@ -5,7 +5,7 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient');
   const { Schema } = mongooseClient;
   const events = new Schema({
-    "TriggersIDSchema": {
+    "triggers_ID": {
       type: mongoose.Schema.Types.ObjectId
     },
     "description": {

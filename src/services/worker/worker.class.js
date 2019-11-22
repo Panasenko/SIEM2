@@ -2,34 +2,34 @@ const _ = require('lodash')
 const Worker = require('./worker.run')
 
 exports.WorkerService = class WorkerService {
-  constructor(app) {
+  constructor(options) {
+    this.options = options
+    this.dbZabbixCli = options.zabbixCliDB
     this.workers = []
-    this.ZabbixCliDB = app.service('zabbix-cli-DB')
-    this.init(app)
+
+    this.init()
   }
 
-
-  init(app) {
-    const ZabbixCli = this.ZabbixCliDB.find()
-
-    if (ZabbixCli.length) {
-      _.forEach(ZabbixCli, async item => {
-        return this.workers.push(new Worker(item, app))
-      })
-    }
-
+  init(options) {
+    new Promise((resolve, reject) => {
+      resolve(this.dbZabbixCli.find())
+    })
+      .then(
+        result => _.forEach(result, async item => this.workers.push(new Worker(item, this.options))),
+        err => new Error(err)
+      )
   }
 
   async find(params) {
-    return this.workers
+
   }
 
   async get(id, params) {
     return _.filter(this.workers, items => items._id === id)
   }
 
-  async create(data, params) {
-    return this.workers.push(new Worker(data, app))
+  async create(data, options) {
+    return this.workers.push(new Worker(data, this.options))
   }
 
   async update(id, data, params) {
@@ -45,6 +45,6 @@ exports.WorkerService = class WorkerService {
   }
 
   async remove(id, params) {
-    return  _.filter(this.workers, subscriber => String(subscriber._id) !== id)
+    return _.filter(this.workers, subscriber => String(subscriber._id) !== id)
   }
 };

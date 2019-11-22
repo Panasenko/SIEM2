@@ -20,7 +20,7 @@ module.exports = function ZabbixAPIQuery() {
   return {
     version: (parent, args) => ({version: callService("apiinfo.version", args)}),
     token: (parent, args) => ({token: callService("user.login", args)}),
-    hostgroup: (parent, args) => callService("hostgroup.get", args),
+    hostgroup: (parent, args) =>callService("hostgroup.get", args),
     hosts: (parent, args) => callService("host.get", args),
     applications: (parent, args) => callService("application.get", args),
     graphics: (parent, args) => callService( "graph.get", args),

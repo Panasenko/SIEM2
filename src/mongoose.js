@@ -2,8 +2,10 @@ const mongoose = require('mongoose')
 const logger = require('./logger')
 
 module.exports = function (app) {
-  mongoose.connect(
-    app.get('mongodb'),
+  const mongoConf = app.get('mongodb')
+  const urlConnect = `${mongoConf.url}:${mongoConf.port}/${mongoConf.collection}`
+
+  mongoose.connect(urlConnect ,
     {
       useNewUrlParser: true,
       useCreateIndex: true,
@@ -19,7 +21,7 @@ module.exports = function (app) {
     logger.log({
       level: 'info',
       label: 'connected MongoDB',
-      message: `Mongoose connected to ${app.get('mongodb')}`
+      message: `Mongoose connected to ${urlConnect}`
     })
   })
 

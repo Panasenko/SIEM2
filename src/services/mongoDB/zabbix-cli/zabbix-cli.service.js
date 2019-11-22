@@ -6,7 +6,6 @@ const hooks = require('./zabbix-cli.hooks')
 module.exports = function (app) {
   const options = {
     Model: createModel(app),
-    whitelist: [ '$populate' ],
     multi: true
   }
 

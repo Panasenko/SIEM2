@@ -8,8 +8,8 @@ module.exports = function TriggerMutation() {
   return {
     createTriggers: async (parent, args) => {
       try {
-        let result = await ItemsDB.get(args.input.ItemIDSchema)
-        args.input.zabbixCliIDSchema = result.zabbixCliIDSchema
+        let result = await ItemsDB.get(args.input.item_ID)
+        args.input.zabbixCli_ID = result.zabbixCli_ID
         args.input.itemid = result.itemid
         return  await TriggersDB.create(args.input)
       } catch (e) {

@@ -58,7 +58,6 @@ type Hostgroup {
     groupid: String,
     name: String,
     hosts: [Hosts]
-
 }
 
 type Graphics{
@@ -85,7 +84,7 @@ type Trigger{
     average: String,
     warning: String,
     information: String,
-    ItemIDSchema: ID
+    item_ID: ID
 }
 
 type Items {

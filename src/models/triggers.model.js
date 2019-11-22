@@ -40,10 +40,10 @@ module.exports = function (app) {
       type: String,
       default: null
     },
-    "ItemIDSchema": {
+    "item_ID": {
       type: mongoose.Schema.Types.ObjectId
     },
-    "zabbixCliIDSchema": {
+    "zabbixCli_ID": {
       type: mongoose.Schema.Types.ObjectId
     },
   }, {

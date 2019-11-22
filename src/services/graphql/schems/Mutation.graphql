@@ -23,8 +23,8 @@ type TriggerMutation{
   average: String,
   warning: String,
   information: String,
-  ItemIDSchema: ID,
-  zabbixCliIDSchema: ID
+  item_ID: ID,
+  zabbixCli_ID: ID
 }
 
 input TriggerMutationInput{
@@ -37,8 +37,8 @@ input TriggerMutationInput{
   average: String,
   warning: String,
   information: String,
-  ItemIDSchema: ID,
-  zabbixCliIDSchema: ID
+  item_ID: ID,
+  zabbixCli_ID: ID
 }
 
 input ZabbixCliInput{
@@ -53,7 +53,7 @@ input ZabbixCliInput{
 }
 
 input ItemsZabbixCliInput {
-  zabbixCliIDSchema: ID,
+  zabbixCli_ID: ID,
   _id: ID,
   itemid: String,
   hostid: String,
@@ -68,7 +68,7 @@ type ItemsZabbixCli {
   itemid: String,
   hostid: String,
   name: String,
-  zabbixCliIDSchema: ID,
+  zabbixCli_ID: ID,
   description: String,
   value_type: String,
   units: String

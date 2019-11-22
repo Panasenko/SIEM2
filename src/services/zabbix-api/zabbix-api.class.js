@@ -92,7 +92,7 @@ const CallAPI = require("./service.zabbix-api/service.zabbix-api.callAPI")
 
   }
 
-  async callAPI(url, token, method, reqParams) {
+  async callAPI(url, token, method, reqParams) { //TODO: переделать метод, упростить и сделать обработку ошибок возвращаемых ошибок в ответе
     try {
       let new_Obj = new CallAPI(url)
       let result = await new_Obj.call(method, token, reqParams)
