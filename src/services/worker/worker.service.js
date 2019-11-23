@@ -7,7 +7,8 @@ module.exports = function (app) {
     zabbixCliDB: app.service('zabbix-cli-DB'),
     itemsDB: app.service('itemsDB'),
     triggersDB: app.service('triggersDB'),
-    redisClient: app.service('redis')
+    redisClient: app.service('redis'),
+    zabbixAPI: app.service('zabbix-api'),
   }
 
   app.use('/worker', new WorkerService(options, app));

@@ -1,10 +1,11 @@
+const axios = require('axios')
 const logger = require('./../../logger')
-const CallAPI = require("./service.zabbix-api/service.zabbix-api.callAPI")
 
  class ZabbixApi {
 
   async find({method, args}) {
     let {url, token, reqParam} = args
+
     let params = {}
 
     switch (method) {
@@ -88,28 +89,35 @@ const CallAPI = require("./service.zabbix-api/service.zabbix-api.callAPI")
           message: `method not found`
         })
     }
-    return await this.callAPI(url, token, method, params)
-
+    return await this.call(url, token, method, params).then(null, error => {console.log(error)})
   }
 
-  async callAPI(url, token, method, reqParams) { //TODO: переделать метод, упростить и сделать обработку ошибок возвращаемых ошибок в ответе
-    try {
-      let new_Obj = new CallAPI(url)
-      let result = await new_Obj.call(method, token, reqParams)
-      return await result.data.result
-    } catch (e) {
-      logger.log({
-        level: 'error',
-        label: 'zabbix-api.class',
-        message: e
-      })
-      throw new Error({
-        level: "error",
-        label: "zabbix-api.class",
-        message: e
-      })
+   async call(url, token, method, params) {
+    let dataRequest = {
+      method: method,
+      auth: token,
+      params: params,
+      jsonrpc: 2.0,
+      id: Math.floor(Math.random() * (10000 - 1))
     }
-  }
+
+     try {
+       const result = await axios({
+         baseURL: url,
+         method: 'post',
+         headers: {
+           Accept: 'application/json',
+         },
+         data: dataRequest,
+         timeout: 40000,
+         retries: 0
+       })
+
+       return await result.data.result
+     } catch (error) {
+       throw new Error(`Class ${this.constructor.name}, method \"call\" - ${error}`)
+     }
+   }
 }
 
 module.exports = ZabbixApi

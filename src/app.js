@@ -30,7 +30,7 @@ app.configure(express.rest())
 app.configure(socketio())
 
 app.configure(mongoose)
-app.configure(redis)
+//app.configure(redis)
 
 app.configure(services)
 
@@ -38,27 +38,27 @@ app.configure(channels)
 
 
 
-//const redis = require('redis')
 
-//const client = redis.createClient(app.get('redis'));
-
-
-
-
-const redisCli = app.service("redis")
+const api = app.service("zabbix-api")
 
 app.get("/test",  async (req, res) => {
 
+  const method = "history.get"
+
   const params = {
-    key: "string1"
+    url: "http://192.168.0.103/zabbix/api_jsonrpc.php",
+    token: "b1a13284396c5c2030dce37993375561",
+    reqParam: {
+      itemids: [ '23300', '28500', '23304' ],
+      time_from: 1574519713,
+      history: 0
+    }
   }
 
- // const result = redisCli.find(params).then(it => res.send(it))
- const ress =  await redisCli.find(params)
+ const ress =  await api.find({method, args: params}).then(it => res.send(it), err => {console.log(err)})
 
   res.send(await ress)
 
-  // redisCli.set("string1", "strin244444444444444444444444444444g", redis.print)
 })
 
 app.use(express.notFound())

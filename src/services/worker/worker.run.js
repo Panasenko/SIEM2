@@ -12,88 +12,104 @@ module.exports = class Worker {
     this.running = true
     this.updated = false
     this.isError = false
-   // this.worker()
+    this.sumError = 0
+    this.worker()
   }
+
 
   worker() {
     if (this.timerID === null) {
-      this.timerID = setInterval((promisArr) => {
-        Promise.all([this.initItem()]).then(() => {
-          console.log("worker")
-        })
+      this.timerID = setInterval(async () => {
+        if (this.running) {
+          await this.conveyor()
+        }
+
+        if(this.sumError >= 5){
+          this.stopWorker()
+        }
+
+
       }, this.zabbixCli.intervalTime || 1000)
     }
+  }
+
+  stopWorker(){
+    clearInterval(this.timerID)
+    this.running = false
+  }
+
+  errorHandler(err) {
+
+
+  }
+
+  conveyor() {
+    new Promise(resolve => {
+      resolve()
+    })
+      .catch(err => errorHandler(err))
+      .then(result => {
+        return this.initItem(result)
+      })
+      .then(result => {
+        return this.iterator(result)
+      })
+      .then(result => {
+        return this.handler(result)
+      })
+      .catch(err => errorHandler())
   }
 
   initItem() {
     const zabbixCli_ID = this.zabbixCli._id
     return new Promise((resolve) => {
-      let result = this.driver.itemsDB.find({query: {zabbixCli_ID: zabbixCli_ID}})
+      let result = this.driver.itemsDB.find({query: {zabbixCli_ID}})
       resolve(result)
     })
-
       .then(items => {
         this.items = _.reduce(items, function (accumulator, value) {
           accumulator[+value.value_type].push(value.itemid)
           return accumulator
         }, [[], [], [], [], []])
-        console.log(this.items)
         return this.items
       })
   }
 
-  /*  initItem() {
-      console.log(2)
-      const zabbixCli_ID = this.zabbixCli._id
-       new Promise((resolve, reject) => {
-       let result = this.driver.items.find()
-        resolve(result)
-      })
+  async iterator() {
+    let promisArray = []
 
-        .then(item => { console.log(item) })*/
+    let params = {}
+    params.method = "history.get"
+    params.args = {}
+    params.args.url = this.zabbixCli.url
+    params.args.token = this.zabbixCli.token
 
-  /*    .then(items => {
-        console.log(items)
+    for (let [key, value] of this.items.entries()) {
+      if (value.length > 0) {
+        let reqParams = {}
+        reqParams.itemids = value
+        reqParams.time_from = this.lastTime || Date.now() / 1000 | 0
+        reqParams.history = key
+        params.args.reqParam = reqParams
 
-        return this.items = _.reduce(items, function (accumulator, value) {
-          accumulator[+value.value_type].push(value.itemid)
-          return accumulator
-        }, [[], [], [], [], []])
-      })*/
-
-
-  /*  iterator() {
-      for (let [key, value] of this.items.entries()) {
-        if (value.length > 0) {
-          let reqParams = {}
-          reqParams.itemids = value
-          reqParams.time_from = this.lastTime || Date.now() / 1000 | 0
-          reqParams.history = key
-          console.log(reqParams)
-        }
+        promisArray.push(await this.callApi(params))
       }
-    }*/
-
-
-  /*init(){
-    let promise = new Promise((resolve, reject) => {
-      this.Service_itemsDB.find({query: {zabbixCliIDSchema: this.id}})
-    })
-
-
-
-    promise
-      .then(
-        result => {
-          // первая функция-обработчик - запустится при вызове resolve
-          console.log("Fulfilled: " + result); // result - аргумент resolve
-        },
-        error => {
-          // вторая функция - запустится при вызове reject
-          console.log("Rejected: " + error); // error - аргумент reject
-        }
-      )
+    }
+    return Promise.all(promisArray)
   }
+
+  async callApi(params) {
+    return await this.driver.zabbixAPI.find(params)
+  }
+
+  handler(resolve) {
+    this.lastTime = Date.now() / 1000 | 0
+    console.log(resolve)
+    return resolve
+  }
+
+
+  /*
 
   async worker(){
     this.timerID = setInterval(async () => {
@@ -107,25 +123,7 @@ module.exports = class Worker {
     }, this.intervalTime)
   }
 
-  handler(){
-    let promise = new Promise((resolve, reject) => {
 
-    })
-
-
-
-    promise
-      .then(
-        result => {
-          // первая функция-обработчик - запустится при вызове resolve
-          console.log("Fulfilled: " + result); // result - аргумент resolve
-        },
-        error => {
-          // вторая функция - запустится при вызове reject
-          console.log("Rejected: " + error); // error - аргумент reject
-        }
-      )
-  }
 
 
 
