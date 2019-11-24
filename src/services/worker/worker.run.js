@@ -3,10 +3,7 @@ const _ = require('lodash')
 module.exports = class Worker {
   constructor(params, options) {
     this.zabbixCli = params
-    this.items = []
-
     this.driver = options
-
     this.lastTime = Date.now() / 1000 | 0
     this.timerID = null
     this.running = true
@@ -20,72 +17,85 @@ module.exports = class Worker {
   worker() {
     if (this.timerID === null) {
       this.timerID = setInterval(async () => {
-        if (this.running) {
-          await this.conveyor()
-        }
-
-        if(this.sumError >= 5){
-          this.stopWorker()
-        }
-
-
-      }, this.zabbixCli.intervalTime || 1000)
+        await this.initZabbixCli(this.zabbixCli._id).then(
+          result => {
+            if (result.inProgress) {
+              this.conveyor()
+            }
+          }
+        )
+      }, this.zabbixCli.intervalTime || 30000)
     }
   }
 
-  stopWorker(){
-    clearInterval(this.timerID)
-    this.running = false
+  async initZabbixCli(id) {
+    return await this.driver.zabbixCliDB.get(this.zabbixCli._id)
+      .then(result => {
+        return this.zabbixCli = result
+      })
+      .catch(err => this.stopWorker(err))
   }
 
-  errorHandler(err) {
 
-
+  initTask() {
+    return {
+      zabbixCli_ID: this.zabbixCli._id,
+      reqHistory: {
+        method: "history.get",
+        args: {
+          url: this.zabbixCli.url,
+          token: this.zabbixCli.token,
+          reqParam: {}
+        }
+      }
+    }
   }
 
   conveyor() {
     new Promise(resolve => {
-      resolve()
+      resolve(this.initTask())
     })
-      .then(result => this.initItem(result))
-      .then(result => this.iterator(result))
+      .then(async task => {
+        task.itemObj = await this.getItems(task)
+        return task
+      })
+      .then(async task => {
+        task.itemsArr = await this.itemsToArr(task)
+        return task
+      })
+      .then(async task => {
+        task.result = await this.iterator(task)
+        return task
+      })
       .then(result => this.handler(result))
-      .catch(err => errorHandler())
+      .catch(err => this.errorHandler(err))
   }
 
-  initItem() {
-    const zabbixCli_ID = this.zabbixCli._id
+  getItems(task) {
     return new Promise((resolve) => {
-      let result = this.driver.itemsDB.find({query: {zabbixCli_ID}})
+      let result = this.driver.itemsDB.find({query: {zabbixCli_ID: task.zabbixCli_ID}})
       resolve(result)
     })
-      .then(items => {
-        this.items = _.reduce(items, function (accumulator, value) {
-          accumulator[+value.value_type].push(value.itemid)
-          return accumulator
-        }, [[], [], [], [], []])
-        return this.items
-      })
   }
 
-  async iterator() {
+  itemsToArr(task) {
+    return _.reduce(task.itemObj, function (accumulator, value) {
+      accumulator[+value.value_type].push(value.itemid)
+      return accumulator
+    }, [[], [], [], [], []])
+  }
+
+  async iterator(task) {
     let promisArray = []
-
-    let params = {}
-    params.method = "history.get"
-    params.args = {}
-    params.args.url = this.zabbixCli.url
-    params.args.token = this.zabbixCli.token
-
-    for (let [key, value] of this.items.entries()) {
+    for (let [key, value] of task.itemsArr.entries()) {
       if (value.length > 0) {
-        let reqParams = {}
-        reqParams.itemids = value
-        reqParams.time_from = this.lastTime || Date.now() / 1000 | 0
-        reqParams.history = key
-        params.args.reqParam = reqParams
+        task.reqHistory.args.reqParam = {
+          itemids: value,
+          time_from: this.lastTime || Date.now() / 1000 | 0,
+          history: key
+        }
 
-        promisArray.push(await this.callApi(params))
+        promisArray.push(await this.callApi(task.reqHistory))
       }
     }
     return Promise.all(promisArray)
@@ -95,10 +105,24 @@ module.exports = class Worker {
     return await this.driver.zabbixAPI.find(params)
   }
 
-  handler(resolve) {
+  handler(task) {
     this.lastTime = Date.now() / 1000 | 0
-    console.log(resolve)
-    return resolve
+    console.log(task.result)
+    return task
+  }
+
+  stopWorker() {
+    console.log("stop")
+    clearInterval(this.timerID)
+    this.running = false
+  }
+
+  errorHandler(err) {
+    this.sumError++
+    if (this.sumError >= 5) {
+      this.stopWorker()
+    }
+
   }
 
 }
