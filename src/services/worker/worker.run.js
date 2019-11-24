@@ -9,7 +9,7 @@ module.exports = class Worker {
     this.running = false
     this.isError = false
     this.sumError = 0
-    this.worker()
+    //this.worker()
   }
 
 
@@ -65,6 +65,7 @@ module.exports = class Worker {
       })
       .then(async task => {
         task.resHistory = _.flatten(await this.iterator(task))
+        this.lastTime = Date.now() / 1000 | 0
         return task
       })
       .then(task => {
@@ -108,7 +109,7 @@ module.exports = class Worker {
   }
 
   handler(task) {
-    this.lastTime = Date.now() / 1000 | 0
+
     console.log(task)
     return task
   }
