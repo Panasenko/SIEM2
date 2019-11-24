@@ -56,18 +56,20 @@ module.exports = class Worker {
       resolve(this.initTask())
     })
       .then(async task => {
-        task.itemObj = await this.getItems(task)
+        task.items = await this.getItems(task)
         return task
       })
       .then(async task => {
-        task.itemsArr = await this.itemsToArr(task)
+        task.items = await this.itemsToArr(task)
         return task
       })
       .then(async task => {
-        task.result = await this.iterator(task)
+        task.resHistory = _.flatten(await this.iterator(task))
         return task
       })
-      .then(result => this.handler(result))
+      .then(task => {
+        return this.handler(task)
+      })
       .catch(err => this.errorHandler(err))
   }
 
@@ -79,7 +81,7 @@ module.exports = class Worker {
   }
 
   itemsToArr(task) {
-    return _.reduce(task.itemObj, function (accumulator, value) {
+    return _.reduce(task.items, function (accumulator, value) {
       accumulator[+value.value_type].push(value.itemid)
       return accumulator
     }, [[], [], [], [], []])
@@ -87,7 +89,7 @@ module.exports = class Worker {
 
   async iterator(task) {
     let promisArray = []
-    for (let [key, value] of task.itemsArr.entries()) {
+    for (let [key, value] of task.items.entries()) {
       if (value.length > 0) {
         task.reqHistory.args.reqParam = {
           itemids: value,
@@ -107,7 +109,7 @@ module.exports = class Worker {
 
   handler(task) {
     this.lastTime = Date.now() / 1000 | 0
-    console.log(task.result)
+    console.log(task)
     return task
   }
 

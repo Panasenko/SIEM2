@@ -36,31 +36,6 @@ app.configure(services)
 
 app.configure(channels)
 
-
-
-
-const api = app.service("zabbix-api")
-
-app.get("/test",  async (req, res) => {
-
-  const method = "history.get"
-
-  const params = {
-    url: "http://192.168.0.103/zabbix/api_jsonrpc.php",
-    token: "b1a13284396c5c2030dce37993375561",
-    reqParam: {
-      itemids: [ '23300', '28500', '23304' ],
-      time_from: 1574519713,
-      history: 0
-    }
-  }
-
- const ress =  await api.find({method, args: params}).then(it => res.send(it), err => {console.log(err)})
-
-  res.send(await ress)
-
-})
-
 app.use(express.notFound())
 app.use(express.errorHandler({ logger }))
 
