@@ -6,8 +6,7 @@ module.exports = class Worker {
     this.driver = options
     this.lastTime = Date.now() / 1000 | 0
     this.timerID = null
-    this.running = true
-    this.updated = false
+    this.running = false
     this.isError = false
     this.sumError = 0
     this.worker()
@@ -53,6 +52,7 @@ module.exports = class Worker {
 
   conveyor() {
     new Promise(resolve => {
+      this.running = true
       resolve(this.initTask())
     })
       .then(async task => {
@@ -119,6 +119,7 @@ module.exports = class Worker {
 
   errorHandler(err) {
     this.sumError++
+    this.isError = true
     if (this.sumError >= 5) {
       this.stopWorker()
     }
