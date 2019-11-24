@@ -47,16 +47,9 @@ module.exports = class Worker {
     new Promise(resolve => {
       resolve()
     })
-      .catch(err => errorHandler(err))
-      .then(result => {
-        return this.initItem(result)
-      })
-      .then(result => {
-        return this.iterator(result)
-      })
-      .then(result => {
-        return this.handler(result)
-      })
+      .then(result => this.initItem(result))
+      .then(result => this.iterator(result))
+      .then(result => this.handler(result))
       .catch(err => errorHandler())
   }
 
@@ -107,50 +100,5 @@ module.exports = class Worker {
     console.log(resolve)
     return resolve
   }
-
-
-  /*
-
-  async worker(){
-    this.timerID = setInterval(async () => {
-      if (this.running && this.items.length) {
-        await this.request()
-        this.lastTime = Date.now() / 1000 | 0
-      } else {
-        clearInterval(this.timerID)
-        this.running = false
-      }
-    }, this.intervalTime)
-  }
-
-
-
-
-
-  async request(){
-    console.log("Вызов АПИ")
-    for (let [key, value] of ChangItems.parsItems(this.items).entries()) {
-      if (value.length > 0) {
-        let reqParams = {}
-        reqParams.itemids = value
-        reqParams.time_from = this.lastTime || Date.now() / 1000 | 0
-        reqParams.history = key
-
-        try {
-          let dataHistory = await ZabbixAPI.getHistory(this._url, this._token, reqParams)
-          this.isError = false
-          console.log(dataHistory)
-          if (dataHistory.length) {
-
-          }
-        } catch (e) {
-          console.log(e)
-          this.isError = true
-        }
-      }
-    }
-  }
-*/
-
 
 }
