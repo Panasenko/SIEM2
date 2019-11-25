@@ -43,7 +43,7 @@ exports.Check = class Check {
       ]
     }
 
-    this.create(this.tasker)
+      // this.create(this.tasker)
   }
 
   create(task) {
@@ -71,8 +71,8 @@ exports.Check = class Check {
         console.log(err)
       })
 
-      .then(async task => {
-        task.resHistory = await this.validation(task)
+      .then(task => {
+        task.resHistory = this.validation(task)
         console.log(task)
         return task
       })
@@ -86,7 +86,7 @@ exports.Check = class Check {
   }
 
    validation(task) {
-    return  _.map(task.resHistory, async function (value) {
+    return  _.forEach(task.resHistory, async function (value) {
         let arrTrig = _.filter(task.triggers, {itemid: value.itemid})
         if (arrTrig.length) {
           return _.forEach(arrTrig, function (trigger) {

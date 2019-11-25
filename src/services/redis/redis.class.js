@@ -1,36 +1,37 @@
-
+const _ = require('lodash')
 exports.Redis = class Redis {
-  constructor (options) {
-    this.redis = options.redis
+  constructor(options) {
+    this.driver = options
   }
 
-  async find (params) {
-      return await this.redis.getAsync(params.key)
-  }
-
-  async get (id, params) {
-    return {
-      id, text: `A new message with ID: ${id}!`
-    };
-  }
-
-  async create (data, params) {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current, params)))
+  async get(id) {
+    if(_.isString(id)){
+      return await this.driver.redis.hgetallAsync(id).then(result => {
+          return result
+        },
+        err => {
+          throw new Error(err)
+        })
+    } else {
+      throw new Error("invalid request parameters")
     }
 
-    return data;
   }
 
-  async update (id, data, params) {
-    return data;
+  async create(data) {
+    if (_.isObject(data)) {
+      return await this.driver.redis.HMSET(data.id, data)
+    } else {
+      throw new Error("invalid request parameters")
+    }
+
   }
 
-  async patch (id, data, params) {
-    return data;
-  }
-
-  async remove (id, params) {
-    return { id };
+  async remove(id) {
+    if(_.isString(id)){
+      return this.driver.redis.del(id)
+    } else {
+      throw new Error("invalid request parameters")
+    }
   }
 };

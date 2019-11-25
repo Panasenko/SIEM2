@@ -24,20 +24,41 @@ app.use(helmet())
 app.use(cors())
 app.use(compress())
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({extended: true}))
 
 app.configure(express.rest())
 app.configure(socketio())
 
 app.configure(mongoose)
-//app.configure(redis)
+app.configure(redis)
 
 app.configure(services)
 
 app.configure(channels)
 
+const service = app.service('redis')
+
+app.get("/hset", async (req, res) => {
+  let result = await service.create({
+    id: "user:4:db",
+    name: "maks"
+  })
+  return res.json(result)
+
+})
+
+app.get("/hget", async (req, res) => {
+  let result = await service.get("user:4:db")
+  return res.json(result)
+})
+
+app.get("/hdel", async (req, res) => {
+  let result = await service.remove("user:4:db")
+  return res.json(result)
+})
+
 app.use(express.notFound())
-app.use(express.errorHandler({ logger }))
+app.use(express.errorHandler({logger}))
 
 app.hooks(appHooks)
 

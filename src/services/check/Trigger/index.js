@@ -16,11 +16,18 @@ module.exports = class Trigger {
     this.average = Instruction.init(params.average)
     this.warning = Instruction.init(params.warning)
     this.information = Instruction.init(params.information)
-
-    console.log(1)
   }
 
-  check(data) {
+  check(data){
+    return new Promise(resolve => {
+
+    })
+  }
+
+
+
+
+  levelAlert(data) {
     let params = this.initParams()
 
     switch (true) {
@@ -36,9 +43,11 @@ module.exports = class Trigger {
       case this.warning(data, ...params): data.resTrigger = "warning"
         console.log("warning")
         break
-      case this.information(data, ...params): data.resTrigger = "information"
+      case this.information(data, ...params):
         console.log("information")
-        break
+        return data.resTrigger = "information"
+        /*
+        break*/
       default: data.resTrigger = "none"
     }
   }
