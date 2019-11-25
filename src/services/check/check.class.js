@@ -80,19 +80,22 @@ exports.Check = class Check {
 
   initTriggers(task) {
     return  _.reduce(task.triggers, function (accumulator, value) {
-      accumulator.push(new Trigger(value))
+      accumulator.push(new Trigger(value, task.zabbixCli_ID))
       return accumulator
     }, [])
   }
 
-   validation(task) {
-    return  _.forEach(task.resHistory, async function (value) {
+  async validation(task) {
+    return  _.forEach(task.resHistory, async value => {
         let arrTrig = _.filter(task.triggers, {itemid: value.itemid})
         if (arrTrig.length) {
-          return _.forEach(arrTrig, function (trigger) {
-            value.resTrigger = trigger.check(value)
+          return await _.forEach(arrTrig, async trigger => {
+            value.resTrigger = await trigger.check(value)
             return value
           })
+        } else {
+          value.resTrigger = "not trigger"
+          return value
         }
       })
   }
