@@ -2,20 +2,18 @@ const _ = require('lodash')
 const Worker = require('./worker.run')
 
 exports.WorkerService = class WorkerService {
-  constructor(options) {
-    this.options = options
-    this.dbZabbixCli = options.zabbixCliDB
+  constructor(service) {
+    this.service = service
     this.workers = []
-
     this.init()
   }
 
-  init(options) {
+  init() {
     new Promise((resolve, reject) => {
-      resolve(this.dbZabbixCli.find())
+      resolve(this.service.zabbixCliDB.find())
     })
       .then(
-        result => _.forEach(result, async item => this.workers.push(new Worker(item, this.options))),
+        result => _.forEach(result, async item => this.workers.push(new Worker(item, this.service))),
         err => new Error(err)
       )
   }

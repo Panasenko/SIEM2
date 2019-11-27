@@ -39,16 +39,16 @@ app.configure(channels)
 const service = app.service('redis')
 
 app.get("/hset", async (req, res) => {
-  let result = await service.create({
-    id: "user:4:db",
+  let result = await service.hmset("user:4:db", {
+    id: "usdsd",
     name: "maks"
   })
   return res.json(result)
 
 })
 
-app.get("/hget", async (req, res) => {
-  let result = await service.get("user:4:db")
+app.get("/hgetall", async (req, res) => {
+  let result = await service.hgetall("user:4:db")
   return res.json(result)
 })
 
