@@ -11,7 +11,6 @@ exports.Check = class Check {
     console.log(`${task.zabbixCli_ID}  ${task.enrichment_items.length}`)
 
     if (!task.zabbixCli_ID && !task.enrichment_items.length) {
-      console.log("\"bad reques to trigger\"")
       return new Error("bad reques to trigger")
     }
     return await this.conveyor(task)
