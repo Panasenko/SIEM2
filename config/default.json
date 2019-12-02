@@ -6,12 +6,12 @@
     "max": 50
   },
   "mongodb": {
-    "url": "mongodb://192.168.0.103",
+    "url": "mongodb://192.168.0.104",
     "port": 27017,
     "collection": "zabbix"
   },
   "redisConf": {
-    "host": "192.168.0.103",
+    "host": "192.168.0.104",
     "port": 6379
   }
 }

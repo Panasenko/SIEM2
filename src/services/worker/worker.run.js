@@ -9,6 +9,19 @@ module.exports = class Worker {
     this.running = false
     this.isError = false
     this.sumError = 0
+
+    this.task = {
+      zabbixCli_ID: this.zabbix_params._id,
+      req_history: {
+        method: "history.get",
+        args: {
+          url: this.zabbix_params.url,
+          token: this.zabbix_params.token,
+          reqParam: {}
+        }
+      }
+    }
+
     this.worker()
   }
 
@@ -30,32 +43,17 @@ module.exports = class Worker {
     return await this.service.zabbixCliDB.get(this.zabbix_params._id)
       .then(result => {
         return this.zabbix_params = result
-      })
+      })//TODO: Добавить копирование параметров в Редис
       .catch(err => {
         console.log(err)
         this.stopWorker(err)
       })
   }
 
-
-  initTask() {
-    return {
-      zabbixCli_ID: this.zabbix_params._id,
-      req_history: {
-        method: "history.get",
-        args: {
-          url: this.zabbix_params.url,
-          token: this.zabbix_params.token,
-          reqParam: {}
-        }
-      }
-    }
-  }
-
   conveyor() {
     new Promise(resolve => {
       this.running = true
-      resolve(this.initTask())
+      resolve(this.task)
     })
       .then(async task => {
         task.items = await this.getItems(task)
@@ -102,7 +100,6 @@ module.exports = class Worker {
           time_from: this.lastTime || Date.now() / 1000 | 0,
           history: key
         }
-
         promis_array.push(await this.callApi(task.req_history))
       }
     }
@@ -152,7 +149,5 @@ module.exports = class Worker {
     if (this.sumError >= 5) {
       this.stopWorker()
     }
-
   }
-
 }
