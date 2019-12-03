@@ -6,8 +6,7 @@ bluebird.promisifyAll(redis.Multi.prototype)
 
 module.exports = function (app) {
 
-  const client = redis.createClient(app.get('redisConf'))
-
+  const client = redis.createClient(app.get('redis_сonf'))
 
   client.on("error", function (err) {
     console.log("Errorss " + err)

@@ -33,11 +33,17 @@ module.exports = class Worker {
             if (result.inProgress) {
               this.conveyor()
             }
+          },
+          err => {
+            if(err){
+              this.errorHandler(err)
+            }
           }
         )
       }, this.zabbix_params.intervalTime || 30000)
     }
   }
+
 
   async initZabbixCli(id) {
     return await this.service.zabbixCliDB.get(this.zabbix_params._id)
@@ -45,14 +51,13 @@ module.exports = class Worker {
         return this.zabbix_params = result
       })//TODO: Добавить копирование параметров в Редис
       .catch(err => {
-        console.log(err)
-        this.stopWorker(err)
+        throw new Error(err)
       })
   }
 
   conveyor() {
-    new Promise(resolve => {
-      this.running = true
+    new Promise(async resolve => {
+     await this.initZabbixCli(this.zabbix_params._id)
       resolve(this.task)
     })
       .then(async task => {
@@ -136,14 +141,12 @@ module.exports = class Worker {
   }
 
   stopWorker(err) {
-    console.log("sasa " + err )
-
     console.log("stop")
     clearInterval(this.timerID)
     this.running = false
   }
 
-  errorHandler(err) {
+  errorHandler(err) { //TODO: Добавить логирование
     this.sumError++
     this.isError = true
     if (this.sumError >= 5) {
