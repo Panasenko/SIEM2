@@ -4,7 +4,7 @@ const logger = require('./../logger')
 module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient');
   const {Schema} = mongooseClient;
-  const triggers = new Schema({
+  const triggers = new Schema({ //TODO: добавить важность триггера
     "name": {
       type: String,
       required: true

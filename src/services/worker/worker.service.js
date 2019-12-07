@@ -16,5 +16,7 @@ module.exports = function (app) {
 
   const worker = app.service('worker')
 
+  //TODO: Дабавить управление массивом классов при помощи ивентемиттеров
+
   worker.hooks(hooks)
 };

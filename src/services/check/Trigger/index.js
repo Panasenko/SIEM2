@@ -109,6 +109,7 @@ module.exports = class Trigger {
           time_normalization: (+trigger_params.time_close_alert * 60) + Time.unixTime()
         })
         break
+
       case (0 < trigger_params.code_level && alert_level.code_level > 0 && alert_level.code_level !== trigger_params.code_level):
         console.log("update_event")
         trigger_params = Object.assign(trigger_params, alert_level, {
@@ -118,6 +119,7 @@ module.exports = class Trigger {
           time_normalization: (+trigger_params.time_close_alert * 60) + Time.unixTime()
         })
         break
+
       case (trigger_params.status === "active" && alert_level.code_level === 0 &&  Number(trigger_params.time_normalization) >= Time.unixTime()):
         console.log("normalization")
         trigger_params = Object.assign(trigger_params, alert_level, {
@@ -126,6 +128,7 @@ module.exports = class Trigger {
           time_event_update: Time.unixTime()
         })
         break
+
       case (trigger_params.status === "active" && alert_level.code_level === 0 &&  Number(trigger_params.time_normalization) <= Time.unixTime()):
         console.log("close")
         trigger_params = Object.assign(trigger_params, alert_level,{
@@ -135,6 +138,7 @@ module.exports = class Trigger {
           time_event_close: Time.unixTime()
         })
         break
+
       default:
         console.log("check")
         trigger_params = Object.assign(trigger_params, alert_level, {
@@ -149,6 +153,7 @@ module.exports = class Trigger {
     let intervalTime = Methods.intervalTime
     let eventTimeStart = (!Boolean(trigger_params.time_event_start)) ? Time.unixTime() : trigger_params.time_event_start
     let nowTime = Time.unixTime()
+
     return [
       intervalTime,
       eventTimeStart,
@@ -158,31 +163,37 @@ module.exports = class Trigger {
 
   alert_level(object, params) {
     switch (true) {
+
       case this.level.disaster(object, ...params):
         object.level = "disaster"
         object.code_level = 5
         console.log("disaster")
         break
+
       case this.level.high(object, ...params):
         object.level = "high"
         object.code_level = 4
         console.log("high")
         break
+
       case this.level.average(object, ...params):
         object.level = "average"
         object.code_level = 3
         console.log("average")
         break
+
       case this.level.warning(object, ...params):
         object.level = "warning"
         object.code_level = 2
         console.log("warning")
         break
+
       case this.level.information(object, ...params):
         object.level = "information"
         object.code_level = 1
         console.log("information")
         break
+
       default:
         object.level = "none"
         object.code_level = 0
