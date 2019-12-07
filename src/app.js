@@ -38,15 +38,61 @@ app.configure(services)
 
 app.configure(channels)
 
-const tssb = app.service("timescale-db")
+/*
+
+const service = require('feathers-sequelize')
+const Sequelize = require('sequelize');
+
+const sequelize = new Sequelize('siem', 'postgres', '548987', {
+  dialect: 'postgres',
+  host: '192.168.0.103',
+  port: '5432'
+});
+
+const Message = sequelize.define('timescale_db', {
+  text: {
+    type: Sequelize.STRING,
+    allowNull: false
+  }
+}, {
+  freezeTableName: true
+});
+
+app.use('/messages', service({
+  Model: Message,
+  paginate: {
+    default: 2,
+    max: 4
+  }
+}))
+
+
+Message.sync().then(() => {
+  app.service('messages').create({
+    text: 'Messagever'
+  }).then(message => console.log('Created message', message));
+});
+
+*/
+
+
+const request = app.service('zabbix-history')
 
 app.get("/add", async (req, res) => {
-  let result = await tssb.create({
-    text: 'Message created on server'
-  }).then(message => {
-    console.log('Created message', message)
-    res.json(message)
-  });
+  request.create({
+    zabbix_cli_id: 'sdfd',
+    itemid: 'Messagedsfsdfdsfver',
+    clock: 'dsfdsfdsfs',
+    value: 'Messagdfewrwerr43ever',
+    ns: 'fsdfs4r4f3',
+
+  })
+    .then(message => {
+      console.log('Created message', message)
+    },
+      err => {
+      console.log(err)
+      })
 })
 
 

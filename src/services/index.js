@@ -7,8 +7,7 @@ const items = require('./mongoDB/items/items.service.js')
 const events = require('./mongoDB/events/events.service.js')
 const redis = require('./redis/redis.service.js')
 const check = require('./check/check.service.js')
-
-const timescaleDb = require('./timescale-db/timescale-db.service.js');
+const zabbixHistory = require('./zabbix_history/zabbix_history.service.js')
 
 module.exports = function (app) {
   app.configure(zabbixApi)
@@ -19,8 +18,6 @@ module.exports = function (app) {
   app.configure(events)
   app.configure(zabbixCli)
   app.configure(graphql)
+  app.configure(zabbixHistory)
   app.configure(worker)
-
-
- // app.configure(timescaleDb);
 }

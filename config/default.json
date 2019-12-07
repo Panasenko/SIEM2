@@ -14,5 +14,19 @@
     "host": "192.168.0.103",
     "port": 6379
   },
-  "postgres": "postgres://postgres:@192.168.0.103:5432/siem"
+  "postgres": {
+    "db_login": "postgres",
+    "db_password": "548987",
+    "db_name": "siem",
+    "config": {
+      "dialect": "postgres",
+      "host": "192.168.0.103",
+      "port": "5432",
+      "logging": false,
+      "define": {
+        "freezeTableName": true
+      }
+    }
+  }
 }
+
