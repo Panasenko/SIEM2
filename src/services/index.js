@@ -8,6 +8,8 @@ const events = require('./mongoDB/events/events.service.js')
 const redis = require('./redis/redis.service.js')
 const check = require('./check/check.service.js')
 
+const timescaleDb = require('./timescale-db/timescale-db.service.js');
+
 module.exports = function (app) {
   app.configure(zabbixApi)
   app.configure(redis)
@@ -20,4 +22,5 @@ module.exports = function (app) {
   app.configure(worker)
 
 
+  app.configure(timescaleDb);
 }

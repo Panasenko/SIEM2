@@ -13,6 +13,6 @@
   "redis_сonf": {
     "host": "192.168.0.103",
     "port": 6379
-  }
+  },
+  "postgres": "postgres://postgres:@192.168.0.103:5432/siem"
 }
-

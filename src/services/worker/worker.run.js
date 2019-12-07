@@ -10,6 +10,8 @@ module.exports = class Worker {
     this.isError = false
     this.sumError = 0
 
+    console.log(1)
+
     this.task = {
       zabbixCli_ID: this.zabbix_params._id,
       req_history: {

@@ -8,15 +8,16 @@ const configuration = require('@feathersjs/configuration')
 const express = require('@feathersjs/express')
 const socketio = require('@feathersjs/socketio')
 
+const middleware = require('./middleware');
 const services = require('./services')
 const appHooks = require('./app.hooks')
 const channels = require('./channels')
 
 const mongoose = require('./mongoose')
 const redis = require('./redis')
+const sequelize = require('./sequelize');
 
 const app = express(feathers())
-
 
 app.configure(configuration())
 
@@ -31,7 +32,8 @@ app.configure(socketio())
 
 app.configure(mongoose)
 app.configure(redis)
-
+app.configure(sequelize);
+app.configure(middleware)
 app.configure(services)
 
 app.configure(channels)
