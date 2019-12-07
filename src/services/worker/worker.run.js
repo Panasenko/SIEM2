@@ -24,7 +24,7 @@ module.exports = class Worker {
       }
     }
 
-    this.worker()
+   // this.worker()
   }
 
   worker() {

@@ -22,5 +22,5 @@ module.exports = function (app) {
   app.configure(worker)
 
 
-  app.configure(timescaleDb);
+ // app.configure(timescaleDb);
 }

@@ -32,11 +32,25 @@ app.configure(socketio())
 
 app.configure(mongoose)
 app.configure(redis)
-app.configure(sequelize);
+app.configure(sequelize)
 app.configure(middleware)
 app.configure(services)
 
 app.configure(channels)
+
+const tssb = app.service("timescale-db")
+
+app.get("/add", async (req, res) => {
+  let result = await tssb.create({
+    text: 'Message created on server'
+  }).then(message => {
+    console.log('Created message', message)
+    res.json(message)
+  });
+})
+
+
+
 
 app.use(express.notFound())
 app.use(express.errorHandler({logger}))
