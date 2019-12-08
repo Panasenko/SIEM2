@@ -35,46 +35,7 @@ app.configure(redis)
 app.configure(sequelize)
 app.configure(middleware)
 app.configure(services)
-
 app.configure(channels)
-
-/*
-
-const service = require('feathers-sequelize')
-const Sequelize = require('sequelize');
-
-const sequelize = new Sequelize('siem', 'postgres', '548987', {
-  dialect: 'postgres',
-  host: '192.168.0.103',
-  port: '5432'
-});
-
-const Message = sequelize.define('timescale_db', {
-  text: {
-    type: Sequelize.STRING,
-    allowNull: false
-  }
-}, {
-  freezeTableName: true
-});
-
-app.use('/messages', service({
-  Model: Message,
-  paginate: {
-    default: 2,
-    max: 4
-  }
-}))
-
-
-Message.sync().then(() => {
-  app.service('messages').create({
-    text: 'Messagever'
-  }).then(message => console.log('Created message', message));
-});
-
-*/
-
 
 const request = app.service('zabbix-history')
 
