@@ -60,6 +60,7 @@ module.exports = class History {
 
       .then(async task => {
         task.handler = await this.handler(task)
+        console.log(task)
         return task
       })
 

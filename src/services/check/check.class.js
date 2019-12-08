@@ -13,33 +13,32 @@ exports.Check = class Check {
       return new Error("bad reques to trigger")
     }
     return await this.conveyor(task).then(result => {
-      return result
+      return result.validation
     })
   }
 
   async conveyor(task) {
     return await new Promise(async (resolve, reject) => {
+
       task.triggers = await this.service.triggersDB.find({query: {zabbixCli_ID: task.zabbixCli_ID}})
+
       if (task.triggers.length) {
         resolve(task)
       } else {
         reject(new Error("empty respons triggers"))
       }
     })
+
       .then(task => {
         task.triggers = this.initTriggers(task)
         return task
       })
 
       .then(async task => {
-
-
         task.validation = await this.validation({
           enrichment_items: task.enrichment_items,
           triggers: task.triggers
         })
-
-        console.log(task)
         return task
       })
 
@@ -63,14 +62,12 @@ exports.Check = class Check {
       let array_trigger = _.filter(triggers, {itemid: item.itemid})
 
       if (array_trigger.length) {
-         _.forEach(array_trigger, async trigger => {
-          item.resTrigger = await trigger.check(item)
-
+        _.forEach(array_trigger, async trigger => {
+          item.res_trigger = await trigger.check(item)
         })
       } else {
-        item.resTrigger = "not trigger"
+        item.res_trigger = "not trigger"
       }
     })
   }
-
 }
