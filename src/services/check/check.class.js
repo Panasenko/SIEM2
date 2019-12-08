@@ -6,18 +6,19 @@ exports.Check = class Check {
     this.service = service
   }
 
-
   async find(task) {
     console.log(`${task.zabbixCli_ID}  ${task.enrichment_items.length}`)
 
     if (!task.zabbixCli_ID && !task.enrichment_items.length) {
       return new Error("bad reques to trigger")
     }
-    return await this.conveyor(task)
+    return await this.conveyor(task).then(result => {
+      return result
+    })
   }
 
   async conveyor(task) {
-    await new Promise(async (resolve, reject) => {
+    return await new Promise(async (resolve, reject) => {
       task.triggers = await this.service.triggersDB.find({query: {zabbixCli_ID: task.zabbixCli_ID}})
       if (task.triggers.length) {
         resolve(task)
@@ -31,7 +32,14 @@ exports.Check = class Check {
       })
 
       .then(async task => {
-        task.res_history = await this.validation(task)
+
+
+        task.validation = await this.validation({
+          enrichment_items: task.enrichment_items,
+          triggers: task.triggers
+        })
+
+        console.log(task)
         return task
       })
 
@@ -42,24 +50,27 @@ exports.Check = class Check {
 
   initTriggers(task) {
     let service = this.service
-    return _.reduce(task.triggers, function (accumulator, value) {
+    return _.reduce(task.triggers, (accumulator, value) => {
       accumulator.push(new Trigger(value, service))
       return accumulator
     }, [])
   }
 
-  async validation(task) {
-    return _.forEach(task.enrichment_items, async value => {
-      let array_trigger = _.filter(task.triggers, {itemid: value.itemid})
+
+  async validation({enrichment_items, triggers}) {
+    return _.forEach(enrichment_items, async item => {
+
+      let array_trigger = _.filter(triggers, {itemid: item.itemid})
+
       if (array_trigger.length) {
-        return _.forEach(array_trigger, async trigger => {
-          value.resTrigger = await trigger.check(value)
-          return value
+         _.forEach(array_trigger, async trigger => {
+          item.resTrigger = await trigger.check(item)
+
         })
       } else {
-        value.resTrigger = "not trigger"
-        return value
+        item.resTrigger = "not trigger"
       }
     })
   }
+
 }

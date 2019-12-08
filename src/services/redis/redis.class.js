@@ -5,7 +5,7 @@ exports.Redis = class Redis {
   }
 
   async hgetall(id) {
-    if(_.isString(id)){
+    if (_.isString(id)) {
       return await this.driver.redis.hgetallAsync(id).then(result => {
           return result
         },
@@ -29,11 +29,37 @@ exports.Redis = class Redis {
     } else {
       throw new Error("invalid request parameters")
     }
+  }
+
+  async rset(id, data) {
+    if (_.isObject(data)) {
+      return await this.driver.redis.SETAsync(id, JSON.stringify(data)).then(result => {
+          return result
+        },
+        err => {
+          throw new Error(err)
+        })
+    } else {
+      throw new Error("invalid request parameters")
+    }
+  }
+
+  async rget(id) {
+    if (_.isString(id)) {
+      return await this.driver.redis.getAsync(id).then(result => {
+          return JSON.parse(result)
+        },
+        err => {
+          throw new Error(err)
+        })
+    } else {
+      throw new Error("invalid request parameters")
+    }
 
   }
 
   async remove(id) {
-    if(_.isString(id)){
+    if (_.isString(id)) {
       return this.driver.redis.delAsync(id).then(result => {
           return result
         },
@@ -44,4 +70,4 @@ exports.Redis = class Redis {
       throw new Error("invalid request parameters")
     }
   }
-};
+}

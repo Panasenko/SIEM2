@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const history_worker = require('./history.worker')
 
 module.exports = class Worker {
   constructor(params, service) {
@@ -9,24 +10,18 @@ module.exports = class Worker {
     this.running = false
     this.isError = false
     this.sumError = 0
+    this.history_worker = new history_worker(service)
 
-    this.task = {
-      zabbixCli_ID: this.zabbix_params._id,
-      req_history: {
-        method: "history.get",
-        args: {
-          url: this.zabbix_params.url,
-          token: this.zabbix_params.token,
-          reqParam: {}
-        }
-      }
-    }
-
- this.worker()
+    this.worker()
   }
 
+
   worker() {
-    if (this.timerID === null) {
+   let result = this.history_worker.history(this.zabbix_params)
+  }
+
+ /* worker() {
+    if (_.isNull(this.timerID)) {
       this.timerID = setInterval(async () => {
         await this.initZabbixCli(this.zabbix_params._id).then(
           result => {
@@ -35,17 +30,17 @@ module.exports = class Worker {
             }
           },
           err => {
-            if(err){
+            if (err) {
               this.errorHandler(err)
             }
           }
         )
       }, this.zabbix_params.intervalTime || 30000)
     }
-  }
+  }*/
 
 
-  async initZabbixCli(id) {
+  /*async initZabbixCli(id) {
     return await this.service.zabbixCliDB.get(this.zabbix_params._id)
       .then(result => {
         return this.zabbix_params = result
@@ -57,7 +52,7 @@ module.exports = class Worker {
 
   conveyor() {
     new Promise(async resolve => {
-     await this.initZabbixCli(this.zabbix_params._id)
+      await this.initZabbixCli(this.zabbix_params._id)
       resolve(this.task)
     })
       .then(async task => {
@@ -131,14 +126,14 @@ module.exports = class Worker {
   }
 
   async handler(task) {
-    if (task.zabbixCli_ID && task.enrichment_items.length){
+    if (task.zabbixCli_ID && task.enrichment_items.length) {
       task.validate = await this.service.check.find({
         zabbixCli_ID: task.zabbixCli_ID,
         enrichment_items: task.enrichment_items
       })
     }
     return task
-  }
+  }*/
 
   stopWorker(err) {
     console.log("stop")
