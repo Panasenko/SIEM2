@@ -37,28 +37,6 @@ app.configure(middleware)
 app.configure(services)
 app.configure(channels)
 
-const request = app.service('zabbix-history')
-
-app.get("/add", async (req, res) => {
-  request.create({
-    zabbix_cli_id: 'sdfd',
-    itemid: 'Messagedsfsdfdsfver',
-    clock: 'dsfdsfdsfs',
-    value: 'Messagdfewrwerr43ever',
-    ns: 'fsdfs4r4f3',
-
-  })
-    .then(message => {
-      console.log('Created message', message)
-    },
-      err => {
-      console.log(err)
-      })
-})
-
-
-
-
 app.use(express.notFound())
 app.use(express.errorHandler({logger}))
 

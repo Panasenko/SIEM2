@@ -5,7 +5,7 @@ module.exports = function (app) {
   const sequelizeClient = app.get('sequelizeClient')
 
   const zabbixHistory = sequelizeClient.define('history_zabbix', {
-    zabbix_cli_id: {
+    id_item: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -22,6 +22,10 @@ module.exports = function (app) {
       allowNull: false
     },
     ns: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    units: {
       type: DataTypes.STRING,
       allowNull: false
     },

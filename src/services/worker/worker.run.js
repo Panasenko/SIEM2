@@ -21,17 +21,21 @@ module.exports = class Worker {
     }
   }
 
-  handler(){
+  handler() {
     return Promise.all([
       this.history_worker.history(this.zabbix_params)
-    ]).then(result => {
-      console.log(result)
-    },
-      err => {
-      console.log(err)
-      })
+    ])
+      .catch(err => this.errorHandler(err))
   }
 
+  errorHandler(err) { //TODO: Добавить логирование
+    console.log(err)
+    this.sumError++
+    this.isError = true
+    if (this.sumError >= 5) {
+      this.stopWorker()
+    }
+  }
 
 
   stopWorker(err) {
@@ -40,11 +44,4 @@ module.exports = class Worker {
     this.running = false
   }
 
-  errorHandler(err) { //TODO: Добавить логирование
-    this.sumError++
-    this.isError = true
-    if (this.sumError >= 5) {
-      this.stopWorker()
-    }
-  }
 }

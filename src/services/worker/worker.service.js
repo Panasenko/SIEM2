@@ -9,6 +9,7 @@ module.exports = function (app) {
     triggersDB: app.service('triggersDB'),
     redis: app.service('redis'),
     zabbixAPI: app.service('zabbix-api'),
+    zabbix_tdb: app.service('zabbix-timescaledb'),
     check: app.service('check')
   }
 

@@ -1,13 +1,13 @@
-const zabbixCli = require('./mongoDB/zabbix-cli/zabbix-cli.service.js')
+const zabbixCli = require('./mongodb/zabbix-cli/zabbix-cli.service.js')
 const graphql = require('./graphql/graphql.service.js')
 const zabbixApi = require('./zabbix-api/zabbix-api.service.js')
 const worker = require('./worker/worker.service.js')
-const triggers = require('./mongoDB/triggers/triggers.service.js')
-const items = require('./mongoDB/items/items.service.js')
-const events = require('./mongoDB/events/events.service.js')
+const triggers = require('./mongodb/triggers/triggers.service.js')
+const items = require('./mongodb/items/items.service.js')
+const events = require('./mongodb/events/events.service.js')
 const redis = require('./redis/redis.service.js')
 const check = require('./check/check.service.js')
-const zabbixHistory = require('./zabbix_history/zabbix_history.service.js')
+const zabbixHistory = require('./timescaledb/zabbix_history/zabbix_history.service.js')
 
 module.exports = function (app) {
   app.configure(zabbixApi)

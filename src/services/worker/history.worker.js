@@ -7,7 +7,6 @@ module.exports = class History {
 
   history({_id, url, token}) {
     return new Promise(async (resolve, reject) => {
-
       if (_.isUndefined(_id) || _.isUndefined(url) || _.isUndefined(token)) {
         reject("params is empty")
       }
@@ -22,7 +21,6 @@ module.exports = class History {
   }
 
   conveyor(task) {
-
     return new Promise(async resolve => {
       let result = await this.service.redis.rget(this.generete_rid(task))
 
@@ -33,7 +31,6 @@ module.exports = class History {
       } else {
         resolve(Object.assign(task, result))
       }
-
     })
 
       .then(async task => {
@@ -47,19 +44,23 @@ module.exports = class History {
       })
 
       .then(async task => {
-        task.res_history = _.flatten(await this.iterator(task))
+        task.history = _.flatten(await this.iterator(task))
         task.lastTime = Date.now() / 1000 | 0
         return task
       })
 
       .then(task => {
-        let {items, res_history} = task
-        task.enrichment_items = this.enrichment(items, res_history)
+        task.enrichment_items = this.enrichment(task)
+        console.log(task.enrichment_items)
         return task
       })
 
       .then(async task => {
-        task.handler = await this.handler(task)
+        task.save_status = await this.save_db(task)
+        return task
+      })
+      .then(async task => {
+        task.validate = await this.validate(task)
         console.log(task)
         return task
       })
@@ -70,6 +71,8 @@ module.exports = class History {
         return task
       })
 
+
+      .catch(err => this.errorHandler(err))
 
       .catch(err => this.errorHandler(err))
   }
@@ -121,23 +124,30 @@ module.exports = class History {
     return Promise.all(promis_array)
   }
 
-  enrichment(items, history) {
-    let enrichment_items = []
-
-    _.forEach(items, item => {
-      let item_history = _.filter(history, {
-        itemid: item.itemid
-      })
-
-      if (item_history.length) {
-        item.history = item_history
-        return enrichment_items.push(item)
-      }
-    })
-    return enrichment_items
+  enrichment(task) {
+    let {items, history} = task
+    return _.forEach(history, item => Object.assign(item, _.find(items, {itemid: item.itemid})))
   }
 
-  async handler(task) {
+  async save_db(task){
+    if (task.enrichment_items.length){
+      let res_create = _.map(task.enrichment_items, async item => {
+        return await this.service.zabbix_tdb.create({
+          id_item: String(item._id),
+          itemid: item.itemid,
+          clock: item.clock,
+          value: item.value,
+          ns: item.ns,
+          units: item.units
+        })
+      })
+     return Promise.all(res_create)
+    } else {
+      throw new Error("enrichment_items is empty")
+    }
+  }
+
+  async validate(task) {
     let let_task = task
     if (let_task.enrichment_items.length) {
       return await this.service.check.find({
@@ -150,4 +160,9 @@ module.exports = class History {
     }
   }
 
+  errorHandler(err) { //TODO: Добавить логирование
+    console.log(err)
+  }
+
 }
+
