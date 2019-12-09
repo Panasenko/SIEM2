@@ -56,7 +56,7 @@ module.exports = class History {
       })
 
       .then(async task => {
-        task.save_status = await this.save_db(task)
+        //task.save_status = await this.save_db(task)
         return task
       })
       .then(async task => {
@@ -70,9 +70,6 @@ module.exports = class History {
         task.redis = await this.redis_set(this.generete_rid(task), {zabbixCli_ID, url, token, lastTime , items_array})
         return task
       })
-
-
-      .catch(err => this.errorHandler(err))
 
       .catch(err => this.errorHandler(err))
   }
@@ -148,12 +145,29 @@ module.exports = class History {
   }
 
   async validate(task) {
-    let let_task = task
-    if (let_task.enrichment_items.length) {
-      return await this.service.check.find({
-        zabbixCli_ID: let_task.zabbixCli_ID,
-        enrichment_items: let_task.enrichment_items
-      })
+/*
+
+    let res = await this.service.check.valid({
+      itemid: '23298',
+      clock: '1575924918',
+      value: '1075',
+      ns: '533430417',
+      _id: "5dd7efdec908b102c0ee9af1",
+      zabbixCli_ID: "5dd7d8face99982478e245f0",
+      hostid: '10084',
+      name: 'Context switches per second',
+      description: '',
+      value_type: '3',
+      units: 'sps'
+  }
+  )
+
+    return Promise.all(res)
+*/
+
+    if (task.enrichment_items.length) {
+
+     return _.flatten(await Promise.all(_.map(task.enrichment_items, async item => await this.service.check.valid(item))))
 
     } else {
       return "enrichment_items is enpty"

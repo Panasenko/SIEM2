@@ -4,70 +4,62 @@ const Trigger = require('./Trigger')
 exports.Check = class Check {
   constructor(service) {
     this.service = service
+    this.trigger = []
+    this.init()
   }
 
-  async find(task) {
-    console.log(`${task.zabbixCli_ID}  ${task.enrichment_items.length}`)
-
-    if (!task.zabbixCli_ID && !task.enrichment_items.length) {
-      return new Error("bad reques to trigger")
-    }
-    return await this.conveyor(task).then(result => {
-      return result.validation
-    })
-  }
-
-  async conveyor(task) {
-    return await new Promise(async (resolve, reject) => {
-
-      task.triggers = await this.service.triggersDB.find({query: {zabbixCli_ID: task.zabbixCli_ID}})
-
-      if (task.triggers.length) {
-        resolve(task)
-      } else {
-        reject(new Error("empty respons triggers"))
+  init() {
+    new Promise(async (resolve, reject) => {
+      const trigger = await this.service.triggersDB.find()
+      if (trigger.length) {
+        resolve(trigger)
       }
+      reject(new Error("trigger is empty"))
     })
-
-      .then(task => {
-        task.triggers = this.initTriggers(task)
-        return task
-      })
-
-      .then(async task => {
-        task.validation = await this.validation({
-          enrichment_items: task.enrichment_items,
-          triggers: task.triggers
-        })
-        return task
-      })
-
+      .then(
+        triggers => {
+          let service = this.service
+          _.forEach(triggers, async value => this.trigger.push(new Trigger(value, service)))
+        }
+      )
       .catch(err => {
         console.log(err)
       })
   }
 
-  initTriggers(task) {
-    let service = this.service
-    return _.reduce(task.triggers, (accumulator, value) => {
-      accumulator.push(new Trigger(value, service))
-      return accumulator
-    }, [])
+  create(data) {
+    if (!_.find(this.trigger, item => item.trigger._id === data._id)) {
+      return this.trigger.push(new Trigger(data, service))
+    }
+    throw new Error("Trigger exists")
   }
 
+  get(id) {
+    return _.filter(this.trigger, items => items.trigger._id === id)
+  }
 
-  async validation({enrichment_items, triggers}) {
-    return _.forEach(enrichment_items, async item => {
+  async find() {
+    return this.trigger
+  }
 
-      let array_trigger = _.filter(triggers, {itemid: item.itemid})
+  update(id, data) {
+    _.forEach(this.trigger, item => {
+      if (String(item.trigger._id) === id) {
+        //TODO: добавдить реализацию обновления
 
-      if (array_trigger.length) {
-        _.forEach(array_trigger, async trigger => {
-          item.res_trigger = await trigger.check(item)
-        })
-      } else {
-        item.res_trigger = "not trigger"
+        console.log(item)
       }
     })
+  }
+
+  remove(id) {
+      this.trigger = _.filter(this.trigger, items => String(items._id) !== id)
+      return true
+  }
+
+  async valid(task) {
+    return Promise.all(_.map(_.filter(this.trigger, {itemid: task.itemid}), async trigger => {
+      return await trigger.check(task)
+    }))
   }
 }

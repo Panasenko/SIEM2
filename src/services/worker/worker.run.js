@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const history_worker = require('./history.worker')
+const history_worker = require('./worker.history')
 
 module.exports = class Worker {
   constructor(params, service) {
@@ -12,7 +12,7 @@ module.exports = class Worker {
     this.sumError = 0
     this.history_worker = new history_worker(service)
 
-    this.worker()
+   this.worker()
   }
 
   worker() {

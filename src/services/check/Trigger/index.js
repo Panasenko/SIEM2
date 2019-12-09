@@ -51,7 +51,12 @@ module.exports = class Trigger {
     })
 
       .then(task => {
-        task.trigger_params = this.revise(task)
+        task.alert_level = this.alert_level(task, this.init_methods(task))
+        return task
+      })
+
+      .then(task => {
+        task.trigger_params = this.update_level(task.trigger_params, task.alert_level)
         return task
       })
 
@@ -77,17 +82,16 @@ module.exports = class Trigger {
     return redis_param
   }
 
-  revise(task) {
-    let {} = task
-
+  /*revise(task) {
     return _.reduce(task.history, (trigger_params, value) => {
       let alert_level = this.alert_level(value, this.init_methods(task))
         return this.update_level(trigger_params, alert_level)
     }, task.trigger_params)
-  }
+  }*/
+
+
 
   update_level(trigger_params, alert_level){
-
     switch (true) {
       case (trigger_params.code_level === 0 && alert_level.code_level > 0):
         trigger_params = Object.assign(trigger_params, alert_level, {

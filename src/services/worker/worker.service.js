@@ -1,5 +1,6 @@
-const { WorkerService } = require('./worker.class');
-const hooks = require('./worker.hooks');
+const { WorkerService } = require('./worker.class')
+const hooks = require('./worker.hooks')
+const event = require('./worker.event')
 
 module.exports = function (app) {
 
@@ -17,9 +18,7 @@ module.exports = function (app) {
 
   const worker = app.service('worker')
 
-
-
-  //TODO: Дабавить управление массивом классов при помощи ивентемиттеров
+  app.configure(event)
 
   worker.hooks(hooks)
 };
