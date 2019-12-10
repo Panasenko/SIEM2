@@ -5,7 +5,6 @@ module.exports = class Worker {
   constructor(params, service) {
     this.zabbix_params = params
     this.service = service
-    this.lastTime = Date.now() / 1000 | 0
     this.timerID = null
     this.running = false
     this.isError = false
@@ -20,6 +19,7 @@ module.exports = class Worker {
       this.timerID = setInterval(async () => await this.handler(), this.zabbix_params.intervalTime || 30000)
     }
   }
+
 
   handler() {
     return Promise.all([

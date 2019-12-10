@@ -51,23 +51,21 @@ module.exports = class History {
 
       .then(task => {
         task.enrichment_items = this.enrichment(task)
-        console.log(task.enrichment_items)
         return task
       })
 
       .then(async task => {
-        //task.save_status = await this.save_db(task)
+        task.save_status = await this.save_db(task)
         return task
       })
       .then(async task => {
         task.validate = await this.validate(task)
-        console.log(task)
         return task
       })
 
       .then(async task => {
-        let {zabbixCli_ID, url, token, lastTime , items_array} = task
-        task.redis = await this.redis_set(this.generete_rid(task), {zabbixCli_ID, url, token, lastTime , items_array})
+        let {zabbixCli_ID, url, token, lastTime, items_array} = task
+        task.redis = await this.redis_set(this.generete_rid(task), {zabbixCli_ID, url, token, lastTime, items_array})
         return task
       })
 
@@ -86,7 +84,7 @@ module.exports = class History {
     return data
   }
 
- async getItems(task) {
+  async getItems(task) {
     return await this.service.itemsDB.find({query: {zabbixCli_ID: task.zabbixCli_ID}})
   }
 
@@ -122,12 +120,12 @@ module.exports = class History {
   }
 
   enrichment(task) {
-    let {items, history} = task
-    return _.forEach(history, item => Object.assign(item, _.find(items, {itemid: item.itemid})))
+    return _.forEach(task.history, item => Object.assign(item, _.find(task.items, {itemid: item.itemid})))
   }
 
-  async save_db(task){
-    if (task.enrichment_items.length){
+  async save_db(task) {
+
+    if (task.enrichment_items.length) {
       let res_create = _.map(task.enrichment_items, async item => {
         return await this.service.zabbix_tdb.create({
           id_item: String(item._id),
@@ -138,37 +136,15 @@ module.exports = class History {
           units: item.units
         })
       })
-     return Promise.all(res_create)
+      return Promise.all(res_create)
     } else {
-      throw new Error("enrichment_items is empty")
+      return []
     }
   }
 
   async validate(task) {
-/*
-
-    let res = await this.service.check.valid({
-      itemid: '23298',
-      clock: '1575924918',
-      value: '1075',
-      ns: '533430417',
-      _id: "5dd7efdec908b102c0ee9af1",
-      zabbixCli_ID: "5dd7d8face99982478e245f0",
-      hostid: '10084',
-      name: 'Context switches per second',
-      description: '',
-      value_type: '3',
-      units: 'sps'
-  }
-  )
-
-    return Promise.all(res)
-*/
-
     if (task.enrichment_items.length) {
-
-     return _.flatten(await Promise.all(_.map(task.enrichment_items, async item => await this.service.check.valid(item))))
-
+      return _.flatten(await Promise.all(_.map(task.enrichment_items, async item => await this.service.check.valid(item))))
     } else {
       return "enrichment_items is enpty"
     }
