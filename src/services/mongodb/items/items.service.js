@@ -5,6 +5,7 @@ const hooks = require('./items.hooks');
 
 module.exports = function (app) {
   const options = {
+    app: app,
     Model: createModel(app),
     multi: true
   };

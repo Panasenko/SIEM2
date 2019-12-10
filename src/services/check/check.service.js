@@ -4,6 +4,7 @@ const event = require('./check.event')
 
 module.exports = function (app) {
   const service = {
+    app: app,
     triggersDB: app.service('triggersDB'),
     redis: app.service('redis')
   }

@@ -5,6 +5,7 @@ const hooks = require('./zabbix-cli.hooks')
 
 module.exports = function (app) {
   const options = {
+    app: app,
     Model: createModel(app),
     multi: true
   }

@@ -20,7 +20,6 @@ module.exports = class Worker {
     }
   }
 
-
   handler() {
     return Promise.all([
       this.history_worker.history(this.zabbix_params)
@@ -28,13 +27,18 @@ module.exports = class Worker {
       .catch(err => this.errorHandler(err))
   }
 
-  errorHandler(err) { //TODO: Добавить логирование
-    console.log(err)
+  errorHandler(err) {
     this.sumError++
     this.isError = true
     if (this.sumError >= 5) {
       this.stopWorker()
     }
+
+    app.get('logger').log({
+      level: 'error',
+      label: 'worker history',
+      message: err
+    })
   }
 
 

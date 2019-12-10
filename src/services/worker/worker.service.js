@@ -5,6 +5,7 @@ const event = require('./worker.event')
 module.exports = function (app) {
 
   const service = {
+    app: app,
     zabbixCliDB: app.service('zabbix-cli-DB'),
     itemsDB: app.service('itemsDB'),
     triggersDB: app.service('triggersDB'),

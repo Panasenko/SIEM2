@@ -4,6 +4,7 @@ const hooks = require('./zabbix_history.hooks');
 
 module.exports = function (app) {
   const options = {
+    app: app,
     Model: createModel(app),
     paginate: app.get('paginate')
   };

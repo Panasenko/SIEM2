@@ -4,6 +4,7 @@ const hooks = require('./triggers.hooks')
 
 module.exports = function (app) {
   const options = {
+    app: app,
     Model: createModel(app),
     multi: true
   }

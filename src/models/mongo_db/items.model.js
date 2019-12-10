@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const logger = require('../../logger')
 
 module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient');
@@ -37,7 +36,11 @@ module.exports = function (app) {
   try {
     return mongooseClient.model('Items', items, 'items')
   } catch (e) {
-    logger.error(e)
+    app.get('logger').log({
+      level: 'error',
+      label: 'items model',
+      message: e
+    })
     throw new Error(e)
   }
 };

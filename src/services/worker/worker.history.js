@@ -151,7 +151,11 @@ module.exports = class History {
   }
 
   errorHandler(err) {
-    app.get('logger').log(err)
+    app.get('logger').log({
+      level: 'error',
+      label: 'worker history',
+      message: err
+    })
   }
 
 }

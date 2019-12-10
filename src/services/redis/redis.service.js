@@ -4,6 +4,7 @@ const hooks = require('./redis.hooks');
 
 module.exports = function (app) {
   const options = {
+    app: app,
     redis: app.get('redis')
   }
 
