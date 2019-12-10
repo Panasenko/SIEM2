@@ -150,8 +150,8 @@ module.exports = class History {
     }
   }
 
-  errorHandler(err) { //TODO: Добавить логирование
-    console.log(err)
+  errorHandler(err) {
+    app.get('logger').log(err)
   }
 
 }

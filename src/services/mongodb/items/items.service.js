@@ -1,6 +1,6 @@
 // Initializes the `items` service on path `/items`
 const { ItemsDB } = require('./items.class');
-const createModel = require('../../../models/items.model');
+const createModel = require('../../../models/mongo_db/items.model');
 const hooks = require('./items.hooks');
 
 module.exports = function (app) {

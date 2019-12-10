@@ -1,5 +1,5 @@
 const { TriggersDB } = require('./triggers.class')
-const createModel = require('../../../models/triggers.model')
+const createModel = require('../../../models/mongo_db/triggers.model')
 const hooks = require('./triggers.hooks')
 
 module.exports = function (app) {

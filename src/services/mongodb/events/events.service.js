@@ -1,6 +1,6 @@
 // Initializes the `events` service on path `/events`
 const { EventsDB } = require('./events.class');
-const createModel = require('../../../models/events.model');
+const createModel = require('../../../models/mongo_db/events.model');
 const hooks = require('./events.hooks');
 
 module.exports = function (app) {

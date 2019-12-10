@@ -63,7 +63,6 @@ module.exports = class Trigger {
       })
 
       .then(async task => {
-        console.log(task)
         task.radis_res = await this.redis_set(task.trigger_params)
         return task
       })

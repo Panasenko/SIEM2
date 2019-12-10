@@ -1,5 +1,5 @@
 const { ZabbixHistory } = require('./zabbix_history.class');
-const createModel = require('../../../models/zabbix_history.model');
+const createModel = require('../../../models/postgres_db/zabbix_history.model');
 const hooks = require('./zabbix_history.hooks');
 
 module.exports = function (app) {

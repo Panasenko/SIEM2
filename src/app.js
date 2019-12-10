@@ -20,6 +20,7 @@ const sequelize = require('./sequelize');
 const app = express(feathers())
 
 app.configure(configuration())
+app.configure(logger)
 
 app.use(helmet())
 app.use(cors())

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
-const logger = require('./logger')
+//const logger = require('./logger')
 
 module.exports = function (app) {
+  const logger = app.get('logger')
   const mongoConf = app.get('mongodb')
   const urlConnect = `${mongoConf.url}:${mongoConf.port}/${mongoConf.collection}`
 
@@ -13,12 +14,12 @@ module.exports = function (app) {
       useUnifiedTopology: true
     }
   ).catch(err => {
-    logger.error(err);
+    app.get('logger').error(err);
     process.exit(1);
   })
 
   mongoose.connection.on('connected', function() {
-    logger.log({
+    app.get('logger').log({
       level: 'info',
       label: 'connected MongoDB',
       message: `Mongoose connected to ${urlConnect}`
@@ -26,7 +27,7 @@ module.exports = function (app) {
   })
 
   mongoose.connection.on('error', function(err) {
-    logger.log({
+    app.get('logger').log({
       level: 'error',
       label: 'connected MongoDB',
       message: `Mongoose connection error ${err}`
@@ -34,12 +35,12 @@ module.exports = function (app) {
   })
 
   mongoose.connection.on('disconnected', function() {
-    console.log('Mongoose disconnected')
+    app.get('logger').log('Mongoose disconnected')
   })
 
   let gracefulShutdown = function(msg, callback) {
     mongoose.connection.close(function() {
-      logger.log({
+      app.get('logger').log({
         level: 'info',
         label: 'connection close',
         message: `Mongoose disconnected through ${msg}`

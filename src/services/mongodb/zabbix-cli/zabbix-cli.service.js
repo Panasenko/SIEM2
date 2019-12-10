@@ -1,6 +1,6 @@
 // Initializes the `zabbixCli` service on path `/service.zabbix-api-cli`
 const { ZabbixCliDB } = require('./zabbix-cli.class')
-const createModel = require('../../../models/zabbix-cli.model')
+const createModel = require('../../../models/mongo_db/zabbix-cli.model')
 const hooks = require('./zabbix-cli.hooks')
 
 module.exports = function (app) {
